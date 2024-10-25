@@ -28,4 +28,5 @@ public class MemberService {
 	public Member getMemberById(int id) {
 		return memberDao.getMemberById(id);
 	}
+
 }

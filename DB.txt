@@ -12,39 +12,49 @@ CREATE TABLE article(
 	, `body` TEXT NOT NULL
 );
 
-SELECT * FROM article;
+CREATE TABLE `member`(
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+	, regDate DATETIME NOT NULL
+	, updateDate DATETIME NOT NULL
+	, loginId VARCHAR(100) NOT NULL
+	, loginPw VARCHAR(100) NOT NULL
+	, `name` VARCHAR(20) NOT NULL
+);
 
 INSERT INTO article
-	SET id = 1
-	, regDate = NOW()
-	, updateDate = NOW()
-	, title = '제목1'
-	, `body` = '내용1'
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, title = '제목1'
+			, `body` = '내용1'
 	
 INSERT INTO article
-	SET id = 2
-	, regDate = NOW()
-	, updateDate = NOW()
-	, title = '제목2'
-	, `body` = '내용2'
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, title = '제목2'
+			, `body` = '내용2'
 	
 INSERT INTO article
-	SET id = 3
-	, regDate = NOW()
-	, updateDate = NOW()
-	, title = '제목3'
-	, `body` = '내용3'
-	
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, title = '제목3'
+			, `body` = '내용3'
+
+INSERT INTO `member`
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, loginId = 'test1'
+			, loginPw = 'test1'
+			, `name` = '유저1';
+			
+INSERT INTO `member`
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, loginId = 'test2'
+			, loginPw = 'test2'
+			, `name` = '유저2';
+
 SELECT *
 	FROM article
-	ORDER BY id DESC
-				
-DELETE FROM article
-	WHERE id = 1;
-	
-	INSERT INTO article
-				SET id = 2
-					, regDate = NOW()
-					, updateDate = NOW()
-					, title = 2
-					, `body` = 2
+
+SELECT * 
+	FROM `member`;
