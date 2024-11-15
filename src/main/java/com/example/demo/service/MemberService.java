@@ -7,26 +7,26 @@ import com.example.demo.dto.Member;
 
 @Service
 public class MemberService {
+	
 	private MemberDao memberDao;
-
+	
 	public MemberService(MemberDao memberDao) {
 		this.memberDao = memberDao;
 	}
 
-	public void dojoin(String loginId, String loginPw, String name) {
-		memberDao.dojoin(loginId, loginPw, name);
+	public void joinMember(String loginId, String loginPw, String name) {
+		memberDao.joinMember(loginId, loginPw, name);
 	}
 
-	public Member loginIdDup(String loginId) {
-		return memberDao.loginIdDup(loginId);
-	}
-
-	public int getLastInsertId() {
-		return memberDao.getLastInsertId();
+	public Member getMemberByLoginId(String loginId) {
+		return memberDao.getMemberByLoginId(loginId);
 	}
 
 	public Member getMemberById(int id) {
 		return memberDao.getMemberById(id);
 	}
 
+	public int getLastInsertId() {
+		return memberDao.getLastInsertId();
+	}
 }

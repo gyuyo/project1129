@@ -12,29 +12,30 @@ public interface MemberDao {
 	@Insert("""
 			INSERT INTO `member`
 				SET regDate = NOW()
+					, updateDate = NOW()
 					, loginId = #{loginId}
 					, loginPw = #{loginPw}
-					, `name` = #{name}
+					, name = #{name}
 			""")
-	public void dojoin(String loginId, String loginPw, String name);
+	void joinMember(String loginId, String loginPw, String name);
 
 	@Select("""
 			SELECT *
 				FROM `member`
 				WHERE loginId = #{loginId}
 			""")
-	public Member loginIdDup(String loginId);
-
-	@Select("""
-			SELECT LAST_INSERT_ID();
-			""")
-	public int getLastInsertId();
+	Member getMemberByLoginId(String loginId);
 
 	@Select("""
 			SELECT *
 				FROM `member`
 				WHERE id = #{id}
 			""")
-	public Member getMemberById(int id);
+	Member getMemberById(int id);
 
+	@Select("""
+			SELECT LAST_INSERT_ID();
+			""")
+	int getLastInsertId();
+	
 }

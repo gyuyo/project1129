@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+@import
+	url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css')
+	;
+
+html * {
+	font-family: 'NanumSquare', sans-serif;
+	text-underline-position: under;
+}
+
+.table-box>table {
+	width: 100%;
+}
+
+.table-box>table th, .table-box>table td {
+	border: 1px solid white;
+	padding: 10px;
+	text-align: center;
+}
+
+.btns>button, .btns>div>a {
+	border: 1px solid white;
+	border-radius: 6px;
+	padding: 5px;
+}
+
+.btns>button:hover, .btns>div>a:hover {
+	background-color: white;
+	color: black;
+}

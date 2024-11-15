@@ -9,13 +9,13 @@ import com.example.demo.dto.Article;
 
 @Service
 public class ArticleService {
-
+	
 	private ArticleDao articleDao;
-
+	
 	public ArticleService(ArticleDao articleDao) {
 		this.articleDao = articleDao;
 	}
-
+	
 	public void writeArticle(int loginedMemberId, String title, String body) {
 		articleDao.writeArticle(loginedMemberId, title, body);
 	}
@@ -28,8 +28,8 @@ public class ArticleService {
 		return articleDao.getArticleById(id);
 	}
 
-	public void setArticle(int id, String title, String body) {
-		articleDao.setArticle(id, title, body);
+	public void modifyArticle(int id, String title, String body) {
+		articleDao.modifyArticle(id, title, body);
 	}
 
 	public void deleteArticle(int id) {
@@ -39,5 +39,4 @@ public class ArticleService {
 	public int getLastInsertId() {
 		return articleDao.getLastInsertId();
 	}
-
 }
