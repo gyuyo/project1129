@@ -9,6 +9,10 @@
 <title>${pageTitle }</title>
 <!-- 테일윈드CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
+<!-- daisy UI -->
+<link
+	href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css"
+	rel="stylesheet" type="text/css" />
 <!-- JQuery -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -22,25 +26,45 @@
 <body class="min-h-screen flex flex-col bg-black text-white">
 	<div class="h-20 flex container mx-auto text-3xl">
 		<div>
-			<a class="h-full px-3 flex items-center"
-				href="${pageContext.request.contextPath}/"><i
-				class="fa-solid fa-book mr-2"></i>LOGO</a>
+			<div class="tooltip tooltip-bottom mt-4 " data-tip="HOME">
+				<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/">
+					<button class="btn bg-black text-white hover:bg-gray-800 border-0">LOGO</button>
+				</a>
+			</div>
 		</div>
 		<div class="grow"></div>
 		<ul class="flex">
-			<li><a class="h-full px-3 flex items-center"
-				href="${pageContext.request.contextPath}/"> <i
-					class="fa-solid fa-house text-2xl p-2"></i></a></li>
-			<li><a class="h-full px-3 flex items-center"
-				href="${pageContext.request.contextPath}/usr/article/list"> <i
-					class="fas fa-bars text-2xl p-2"></i></a></li>
+			<li>
+				<div class="tooltip tooltip-bottom mt-4" data-tip="HOME">
+					<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/">
+						<button class="btn bg-black text-white hover:bg-gray-800 border-0"><i class="fa-solid fa-house text-2xl p-2"></i></button>
+					</a>
+				</div>
+			</li>
+			<li>
+				<div class="tooltip tooltip-bottom mt-4" data-tip="LIST">
+					<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/article/list">
+						<button class="btn bg-black text-white hover:bg-gray-800 border-0"><i class="fas fa-bars text-2xl p-2"></i></button>
+					</a>
+				</div>
+			</li>
 			<c:if test="${rq.getLoginedMemberId() == -1 }">
-				<li><a class="h-full px-3 flex items-center"
-					href="${pageContext.request.contextPath}/usr/member/login">LOGIN</a></li>
+				<li>
+					<div class="tooltip tooltip-bottom mt-4" data-tip="LOGIN">
+						<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/member/login">
+							<button class="btn bg-black text-white hover:bg-gray-800 border-0">LOGIN</button>
+						</a>
+					</div>
+				</li>
 			</c:if>
 			<c:if test="${rq.getLoginedMemberId() != -1 }">
-				<li><a class="h-full px-3 flex items-center"
-					href="${pageContext.request.contextPath}/usr/member/doLogout">LOGOUT</a></li>
+				<li>
+					<div class="tooltip tooltip-bottom mt-4" data-tip="LOGOUT">
+						<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/member/doLogout">
+							<button class="btn bg-black text-white hover:bg-gray-800 border-0">LOGOUT</button>
+						</a>
+					</div>
+				</li>
 			</c:if>
 		</ul>
 	</div>

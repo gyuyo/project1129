@@ -44,17 +44,11 @@ public interface ArticleDao {
 	public Article getArticleById(int id);
 
 	@Update("""
-			<script>
 			UPDATE article
 				SET updateDate = NOW()
-					<if test="title != null and title != ''">
-						, title = #{title}
-					</if>
-					<if test="body != null and body != ''">
-						, `body` = #{body}
-					</if>
+					, title = #{title}
+					, `body` = #{body}
 				WHERE id = #{id}
-			</script>
 			""")
 	public void modifyArticle(int id, String title, String body);
 
