@@ -29,7 +29,7 @@
 	<div class="container mx-auto">
 		<div class="table-box">
 			<form action="doModify" onsubmit="modifyForm_onSubmit(this); return false;" method="post">
-				<div class="overflow-x-auto">
+				<div class="w-9/12 mx-auto">
 					<table class="table">
 						<tr>
 							<th>번호</th>
@@ -57,7 +57,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="btns mt-3 text-sm flex justify-between">
+				<div class="btns w-9/12 mt-3 mx-auto text-sm flex justify-between">
 					<button type="button" onclick="history.back();">뒤로가기</button>
 					<button>수정</button>
 				</div>

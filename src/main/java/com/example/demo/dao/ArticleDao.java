@@ -9,19 +9,21 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.dto.Article;
+import com.example.demo.dto.Board;
 
 @Mapper
 public interface ArticleDao {
-	
+
 	@Insert("""
 			INSERT INTO article
 				SET regDate = NOW()
 					, updateDate = NOW()
+					, boardId = #{boardId}
 					, memberId = #{loginedMemberId}
 					, title = #{title}
 					, `body` = #{body}
 			""")
-	public void writeArticle(int loginedMemberId, String title, String body);
+	public void writeArticle(int loginedMemberId, int boardId, String title, String body);
 
 	@Select("""
 			SELECT a.*
@@ -29,9 +31,11 @@ public interface ArticleDao {
 				FROM article AS a
 				INNER JOIN `member` AS m
 				ON a.memberId = m.id
+				WHERE a.boardId = #{boardId}
 				ORDER BY a.id DESC
+				LIMIT ${limitFrom}, 10
 			""")
-	public List<Article> getArticles();
+	public List<Article> getArticles(int boardId, int limitFrom);
 
 	@Select("""
 			SELECT a.*
@@ -62,4 +66,19 @@ public interface ArticleDao {
 			SELECT LAST_INSERT_ID();
 			""")
 	public int getLastInsertId();
+
+	@Select("""
+			SELECT *
+				FROM board
+				WHERE id = #{boardId};
+			""")
+	public Board getBoardById(int boardId);
+
+	@Select("""
+			SELECT COUNT(*)
+				FROM article
+				WHERE boardId = ${boardID}
+			""")
+	public int getArticlesCnt(int boardId);
+
 }

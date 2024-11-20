@@ -9,7 +9,7 @@
 <section class="mt-8 flex-1">
 	<div class="container mx-auto">
 		<div class="table-box">
-			<div class="overflow-x-auto">
+			<div class="w-9/12 mx-auto">
 				<table class="table">
 					<tr>
 						<th>번호</th>
@@ -39,7 +39,7 @@
 			</div>
 		</div>
 
-		<div class="btns mt-3 text-sm flex justify-between">
+		<div class="btns w-9/12 mx-auto mt-3 text-sm flex justify-between">
 			<button onclick="history.back();">뒤로가기</button>
 			<c:if test="${rq.getLoginedMemberId() == article.getMemberId() }">
 				<div class="flex">

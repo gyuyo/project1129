@@ -30,12 +30,12 @@
 <section class="mt-8">
 	<div class="container mx-auto">
 		<form action="doLogin" method="post" onsubmit="loginForm_onSubmit(this); return false;">
-			<div class="login-table">
+			<div class="login-table w-9/12 mx-auto">
 				<table class="table table-lg mx-auto">
 					<tr>
 						<td>
 							<label class="input input-bordered flex items-center gap-2 bg-black">
-							  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4 opacity-70">
+							  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4 opacity-70 bg-black">
 							    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
 							  </svg><input class="grow" type="text" name="loginId" placeholder="아이디를 입력해주세요" />
 							</label>
@@ -61,8 +61,8 @@
 			</div>
 		</form>
 		
-		<div class="mt-3 text-sm">
-			<button class="btn btn-active btn-sm" onclick="history.back();">뒤로가기</button>
+		<div class="btns w-9/12 mt-3 mx-auto text-sm flex justify-between">
+			<button onclick="history.back();">뒤로가기</button>
 		</div>
 	</div>
 </section>

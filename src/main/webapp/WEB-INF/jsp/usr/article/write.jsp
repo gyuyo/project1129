@@ -29,8 +29,25 @@
 	<div class="container mx-auto">
 		<div class="table-box">
 			<form action="doWrite" onsubmit="writeForm_onSubmit(this); return false;" method="post">
-				<div class="overflow-x-auto">
+				<div class="w-9/12 mx-auto">
 					<table class="table">
+						<tr>
+							<th>게시판</th>
+							<td>
+								<div class="flex">
+									<div>
+										<label class="flex items-center"> 	
+											<input class="radio radio-sm bg-white" type="radio" name="boardId" value="1" />&nbsp; 공지사항
+										</label>
+									</div>
+									<div>
+										<label class="flex items-center ml-8"> 
+											<input class="radio radio-sm bg-white" type="radio" name="boardId" value="2" checked />&nbsp; 자유게시판
+										</label>
+									</div>
+								</div>
+							</td>
+						</tr>
 						<tr>
 							<th>제목</th>
 							<td><textarea name="title" rows="2" cols="50" class="bg-black" placeholder="제목"></textarea></td>
@@ -41,7 +58,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="btns mt-3 text-sm flex justify-between">
+				<div class="btns w-9/12 mt-3 mx-auto text-sm flex justify-between">
 					<button type="button" onclick="history.back();">뒤로가기</button>
 					<button>글작성</button>
 				</div>

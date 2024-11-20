@@ -6,8 +6,15 @@
 
 <%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 
+<script>
+	$(document).ready(function() {
+		
+	})
+</script>
+
+
 <section class="mt-8 flex-1">
-	<div class="container mx-auto">
+	<div class="container w-9/12 mx-auto">
 		<div>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
 			Perspiciatis laudantium quod expedita quae tenetur maxime modi
 			commodi non esse minus nostrum voluptates necessitatibus ipsum

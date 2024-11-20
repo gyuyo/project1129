@@ -11,6 +11,7 @@ CREATE TABLE article(
 );
 
 ALTER TABLE article ADD COLUMN memberId INT UNSIGNED NOT NULL AFTER updateDate;
+ALTER TABLE article ADD COLUMN boardId INT UNSIGNED NOT NULL AFTER updateDate;
 
 CREATE TABLE `member`(
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
@@ -23,22 +24,30 @@ CREATE TABLE `member`(
 
 ALTER TABLE `member` MODIFY COLUMN loginId VARCHAR(100) NOT NULL UNIQUE;
 
+CREATE TABLE board(
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+	, `name` VARCHAR(20) NOT NULL COMMENT '게시판 이름'
+);
+
 INSERT INTO article
 	SET regDate = NOW()
 			, updateDate = NOW()
 			, memberId = 1
-			, title = '제목1'
-			, `body` = '내용1';
+			, boardId = 1
+			, title = '공지1'
+			, `body` = '공지내용1';
 INSERT INTO article
 	SET regDate = NOW()
 			, updateDate = NOW()
-			, memberId = 2
+			, memberId = 3
+			, boardId = 2
 			, title = '제목2'
 			, `body` = '내용2';
 INSERT INTO article
 	SET regDate = NOW()
 			, updateDate = NOW()
 			, memberId = 2
+			, boardId = 2
 			, title = '제목3'
 			, `body` = '내용3';
 
@@ -48,13 +57,36 @@ INSERT INTO `member`
 			, loginId = 'test1'
 			, loginPw = 'test1'
 			, `name` = '유저1';
-
 INSERT INTO `member`
 	SET regDate = NOW()
 			, updateDate = NOW()
 			, loginId = 'test2'
 			, loginPw = 'test2'
 			, `name` = '유저2';
+INSERT INTO `member`
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, loginId = 'test3'
+			, loginPw = 'test3'
+			, `name` = '유저3';
+			
+INSERT INTO board
+	SET `name` = '공지사항';
+INSERT INTO board
+	SET `name` = '자유게시판';
 			
 SELECT * FROM article;
 SELECT * FROM `member`;
+SELECT * FROM board;
+
+INSERT INTO article
+(
+    regDate, updateDate, boardId, memberId, title, `body`
+)
+SELECT NOW()
+        , NOW()
+        , FLOOR(RAND() * 2) + 1
+        , FLOOR(RAND() * 3) + 1
+        , CONCAT('제목_', FLOOR(RAND() * 10000))
+        , CONCAT('내용_', FLOOR(RAND() * 10000))
+    FROM article;
