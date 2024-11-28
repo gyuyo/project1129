@@ -27,7 +27,7 @@
 	}
 </script>
 
-<section class="mt-8">
+<section class="mt-8 flex-1">
 	<div class="container mx-auto">
 		<form action="doLogin" method="post" onsubmit="loginForm_onSubmit(this); return false;">
 			<div class="login-table w-9/12 mx-auto">

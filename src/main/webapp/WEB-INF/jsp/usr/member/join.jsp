@@ -85,7 +85,7 @@
 	}
 </script>
 
-<section class="mt-8">
+<section class="mt-8 flex-1">
 	<div class="container mx-auto">
 		<form action="doJoin" method="post" onsubmit="joinForm_onSubmit(this); return false;">
 			<div class="join-table w-9/12 mx-auto">

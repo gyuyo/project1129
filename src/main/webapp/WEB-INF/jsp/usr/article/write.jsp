@@ -6,29 +6,12 @@
 
 <%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 
-<script>
-	const writeForm_onSubmit = function(form) {
-		form.title.value = form.title.value.trim(); 
-		form.body.value = form.body.value.trim(); 
-		
-		if(form.title.value.length == 0) {
-			alert('제목을 입력해주세요.');
-			form.title.focus();
-			return;
-		}
-		if(form.body.value.length == 0) {
-			alert('내용을 입력해주세요.');
-			form.body.focus();
-			return;
-		}
-		form.submit();
-	}
-</script>
+<%@ include file="/WEB-INF/jsp/common/toastUiEditorLib.jsp"%>
 
 <section class="mt-8 flex-1">
 	<div class="container mx-auto">
 		<div class="table-box">
-			<form action="doWrite" onsubmit="writeForm_onSubmit(this); return false;" method="post">
+			<form action="doWrite" onsubmit="submitForm(this); return false;" method="post">
 				<div class="w-9/12 mx-auto">
 					<table class="table">
 						<tr>
@@ -50,11 +33,14 @@
 						</tr>
 						<tr>
 							<th>제목</th>
-							<td><textarea name="title" rows="2" cols="50" class="bg-black" placeholder="제목"></textarea></td>
-						</tr>
+							<td><input type="text" name="title" class="bg-black" placeholder="제목을 입력해주세요" ></td>
+						</tr>	
 						<tr>
 							<th>내용</th>
-							<td><textarea name="body" rows="2" cols="50" class="bg-black" placeholder="내용"></textarea></td>
+							<td>  
+								<input type="hidden" name="body">
+  								<div id="toast-ui-editor" class="bg-white"></div>
+  							</td>
 						</tr>
 					</table>
 				</div>

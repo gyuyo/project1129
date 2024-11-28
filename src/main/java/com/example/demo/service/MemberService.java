@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MemberDao;
@@ -28,5 +30,13 @@ public class MemberService {
 
 	public int getLastInsertId() {
 		return memberDao.getLastInsertId();
+	}
+
+	public void modifyPassword(int loginedMemberId, String loginPw) {
+		memberDao.modifyPassword(loginedMemberId, loginPw);
+	}
+
+	public List<Member> getMembersById(int id) {
+		return memberDao.getMembersById(id);
 	}
 }

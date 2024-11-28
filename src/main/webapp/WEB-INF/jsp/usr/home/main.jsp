@@ -24,6 +24,10 @@
 		<div class="main-thumbnail-img inline-block border border-white rounded-xl">
 			<img src="https://picsum.photos/id/202/500/280" class="rounded-xl">
 		</div>
+		<div>
+			<div></div>
+			<div></div>
+		</div>
 	</div>
 </section>
 

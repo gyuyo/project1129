@@ -11,8 +11,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- daisy UI -->
 <link
-	href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css"
-	rel="stylesheet" type="text/css" />
+	href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
 <!-- JQuery -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -84,6 +83,13 @@
 					<div class="tooltip tooltip-bottom mt-4" data-tip="LOGOUT">
 						<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/member/doLogout">
 							<button	class="btn bg-black text-white hover:bg-gray-800 border-0">LOGOUT</button>
+						</a>
+					</div>
+				</li>
+				<li>
+					<div class="tooltip tooltip-bottom mt-4" data-tip="MYPAGE">
+						<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/member/myPage">
+							<button	class="btn bg-black text-white hover:bg-gray-800 border-0"><i class="fa-regular fa-user"></i></button>
 						</a>
 					</div>
 				</li>

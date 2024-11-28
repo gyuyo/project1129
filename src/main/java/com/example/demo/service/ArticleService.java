@@ -21,8 +21,8 @@ public class ArticleService {
 		articleDao.writeArticle(loginedMemberId, boardId, title, body);
 	}
 
-	public List<Article> getArticles(int boardId, int limitFrom) {
-		return articleDao.getArticles(boardId, limitFrom);
+	public List<Article> getArticles(int boardId, int limitFrom, String searchType, String searchKeyword) {
+		return articleDao.getArticles(boardId, limitFrom, searchType, searchKeyword);
 	}
 
 	public Article getArticleById(int id) {
@@ -45,7 +45,11 @@ public class ArticleService {
 		return articleDao.getBoardById(boardId);
 	}
 
-	public int getArticlesCnt(int boardId) {
-		return articleDao.getArticlesCnt(boardId);
+	public int getArticlesCnt(int boardId, String searchType, String searchKeyword) {
+		return articleDao.getArticlesCnt(boardId, searchType, searchKeyword);
+	}
+
+	public void increaseViews(int id) {
+		articleDao.increaseViews(id);
 	}
 }

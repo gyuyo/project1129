@@ -12,6 +12,7 @@ CREATE TABLE article(
 
 ALTER TABLE article ADD COLUMN memberId INT UNSIGNED NOT NULL AFTER updateDate;
 ALTER TABLE article ADD COLUMN boardId INT UNSIGNED NOT NULL AFTER updateDate;
+ALTER TABLE article ADD COLUMN views INT UNSIGNED NOT NULL DEFAULT 0;
 
 CREATE TABLE `member`(
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
@@ -28,6 +29,22 @@ CREATE TABLE board(
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
 	, `name` VARCHAR(20) NOT NULL COMMENT '게시판 이름'
 );
+
+CREATE TABLE reply(
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+	, regDate DATETIME NOT NULL
+	, updateDate DATETIME NOT NULL
+	, memberId INT UNSIGNED NOT NULL
+	, relTypeCode VARCHAR(20) NOT NULL
+	, relId INT UNSIGNED NOT NULL
+	, `body` TEXT NOT NULL
+);
+
+CREATE TABLE `like`(
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+		, articleId INT UNSIGNED NOT NULL
+		, memberId INT UNSIGNED NOT NULL
+)
 
 INSERT INTO article
 	SET regDate = NOW()
@@ -73,20 +90,44 @@ INSERT INTO `member`
 INSERT INTO board
 	SET `name` = '공지사항';
 INSERT INTO board
-	SET `name` = '자유게시판';
+	SET `name` = '자유';
+			
+INSERT INTO reply
+	SET regDate = NOW()
+        , updateDate = NOW()
+        , memberId = 1
+        , relTypeCode = 'article'
+        , relId = 2
+        , `body` = '댓글테스트1';
+INSERT INTO reply
+	SET regDate = NOW()
+        , updateDate = NOW()
+        , memberId = 1
+        , relTypeCode = 'article'
+        , relId = 1
+        , `body` = '댓글테스트2';
+INSERT INTO reply
+	SET regDate = NOW()
+        , updateDate = NOW()
+        , memberId = 3
+        , relTypeCode = 'article'
+        , relId = 1
+        , `body` = '댓글테스트3';
+INSERT INTO reply
+	SET regDate = NOW()
+        , updateDate = NOW()
+        , memberId = 2
+        , relTypeCode = 'article'
+        , relId = 3
+        , `body` = '댓글테스트4';
+        
+INSERT INTO `like`
+	SET articleId = 1
+        , memberId = 1;
 			
 SELECT * FROM article;
 SELECT * FROM `member`;
 SELECT * FROM board;
+SELECT * FROM reply;
+SELECT * FROM `like`;
 
-INSERT INTO article
-(
-    regDate, updateDate, boardId, memberId, title, `body`
-)
-SELECT NOW()
-        , NOW()
-        , FLOOR(RAND() * 2) + 1
-        , FLOOR(RAND() * 3) + 1
-        , CONCAT('제목_', FLOOR(RAND() * 10000))
-        , CONCAT('내용_', FLOOR(RAND() * 10000))
-    FROM article;
