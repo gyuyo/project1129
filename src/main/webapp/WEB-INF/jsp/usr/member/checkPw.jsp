@@ -7,34 +7,48 @@
 <%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 
 <script>
-	const checkPwForm_onSubmit = async function(form) {
-		form.loginPw.value = form.loginPw.value.trim();
-		
-		if (form.loginPw.value.length == 0) {
-			alert('비밀번호를 입력해주세요');
-			form.loginPw.focus();
-			return;
-		}
-		
-		let member = await getMemberById();
-		
-		if (member.data.loginPw != form.loginPw.value) {
-			alert('비밀번호가 일치하지 않습니다');
-			form.loginPw.value = '';
-			form.loginPw.focus();
-			return;
-		}
-		
-		form.submit();
+const checkPwForm_onSubmit = async function(form) {
+	form.loginPw.value = form.loginPw.value.trim();
+	
+	if (form.loginPw.value.length == 0) {
+		alert('비밀번호를 입력해주세요');
+		form.loginPw.focus();
+		return;
 	}
 	
-	const getMemberById = function() {
-		return $.ajax({
-			url : '/usr/member/getMemberById',
-			type : 'GET',
-			dataType : 'json'
-		})
+	let member = await getMemberById();
+	let inputLoginPw = await encryptSHA256(form.loginPw.value);
+	
+	if (member.data.loginPw != inputLoginPw) {
+		alert('비밀번호가 일치하지 않습니다');
+		form.loginPw.value = '';
+		form.loginPw.focus();
+		return;
 	}
+	
+	form.submit();
+}
+
+const getMemberById = function() {
+	return $.ajax({
+		url : '/usr/member/getMemberById',
+		type : 'GET',
+		dataType : 'json'
+	})
+}
+
+async function encryptSHA256(input) {
+    const encoder = new TextEncoder(); // 입력 문자열을 UTF-8 바이트로 인코딩
+    const data = encoder.encode(input);
+    
+    // SHA-256 해싱
+    const hash = await crypto.subtle.digest("SHA-256", data);
+    
+    // 해싱 결과를 16진수 문자열로 변환
+    return Array.from(new Uint8Array(hash))
+        .map(byte => byte.toString(16).padStart(2, '0')) // 각 바이트를 16진수로 변환
+        .join('');
+}
 </script>
 	
 <section class="mt-8 flex-1">
@@ -45,7 +59,7 @@
 				<table class="table table-lg mx-auto">
 					<tr>
 						<td><input class="grow none" type="hidden" name="id" /> <label
-							class="input input-bordered flex items-center gap-2 bg-black">
+							class="input input-bordered flex items-center gap-2">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
 									fill="currentColor" class="h-4 w-4 opacity-70">
 							    <path fill-rule="evenodd"

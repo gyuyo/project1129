@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Board {
+public class Menu {
 	private int id;
+	private int restaurantId;
 	private String name;
+	private String description;
+	private int price;
 }

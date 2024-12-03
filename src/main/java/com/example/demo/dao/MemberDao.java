@@ -16,11 +16,13 @@ public interface MemberDao {
 			INSERT INTO `member`
 				SET regDate = NOW()
 					, updateDate = NOW()
+					, accessId = #{accessId}
 					, loginId = #{loginId}
 					, loginPw = #{loginPw}
 					, name = #{name}
+					, email = #{email}
 			""")
-	void joinMember(String loginId, String loginPw, String name);
+	void joinMember(int accessId, String loginId, String loginPw, String name, String email);
 
 	@Select("""
 			SELECT *
@@ -48,6 +50,14 @@ public interface MemberDao {
 				WHERE id = #{loginedMemberId}
 			""")
 	void modifyPassword(int loginedMemberId, String loginPw);
+	
+	@Select("""
+			SELECT *
+				FROM `member`
+				WHERE `name` = #{name}
+				AND email = #{email}
+			""")
+	Member getMemberByNameAndEmail(String name, String email);
 	
 	@Select("""
 			SELECT *

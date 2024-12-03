@@ -7,18 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reply {
+public class Restaurant {
 	private int id;
 	private String regDate;
 	private String updateDate;
-	private int memberId;
-	private String relTypeCode;
-	private String relId;
-	private String body;
+	private int cgId;
+	private String name;
+	private String memberId;
 	
 	private String loginId;
-	
-	public String getForPrintBody( ) {
-		return this.body.replaceAll("\n", "<br />");
-	}
 }

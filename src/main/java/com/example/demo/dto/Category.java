@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikePoint {
+public class Category {
 	private int id;
-	private int memberId;
-	private String relTypeCode;
-	private String relId;
-	private int point;
+	private String cgName;
 }

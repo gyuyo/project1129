@@ -24,6 +24,10 @@
 						<td>${member.getName() }</td>
 					</tr>
 					<tr>
+						<th>e-mail</th>
+						<td>${member.getEmail() }</td>
+					</tr>
+					<tr>
 						<th>가입일</th>
 						<td>${member.getRegDate().substring(2, 16) }</td>
 					</tr>
@@ -38,7 +42,7 @@
 		<div class="btns w-9/12 mx-auto mt-3 text-sm flex justify-between">
 			<button onclick="history.back();">뒤로가기</button>
 			<div class="flex">
-				<a href="/usr/member/checkPw" class="p-5">회원정보수정</a>
+				<a href="/usr/member/checkPw" class="p-5">비밀번호변경</a>
 			</div>
 		</div>
 	</div>

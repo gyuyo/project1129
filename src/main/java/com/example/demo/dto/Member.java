@@ -11,7 +11,9 @@ public class Member {
 	private int id;
 	private String regDate;
 	private String updateDate;
+	private int accessId;
 	private String loginId;
 	private String loginPw;
 	private String name;
+	private String email;
 }

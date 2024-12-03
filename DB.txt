@@ -1,133 +1,124 @@
-DROP DATABASE IF EXISTS SB_AM;
-CREATE DATABASE SB_AM;
-USE SB_AM;
+DROP DATABASE IF EXISTS PROJECT;
+CREATE DATABASE PROJECT;
+USE PROJECT;
 
-CREATE TABLE article(
+CREATE TABLE restaurant (
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
 	, regDate DATETIME NOT NULL
 	, updateDate DATETIME NOT NULL
-	, title VARCHAR(100) NOT NULL
-	, `body` TEXT NOT NULL
+	, `name` VARCHAR(100) NOT NULL UNIQUE
+	, cgId INT UNSIGNED NOT NULL
+	, memberId INT UNSIGNED NOT NULL
 );
-
-ALTER TABLE article ADD COLUMN memberId INT UNSIGNED NOT NULL AFTER updateDate;
-ALTER TABLE article ADD COLUMN boardId INT UNSIGNED NOT NULL AFTER updateDate;
-ALTER TABLE article ADD COLUMN views INT UNSIGNED NOT NULL DEFAULT 0;
 
 CREATE TABLE `member`(
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
 	, regDate DATETIME NOT NULL
 	, updateDate DATETIME NOT NULL
-	, loginId VARCHAR(100) NOT NULL
+	, accessId INT UNSIGNED NOT NULL
+	, loginId VARCHAR(100) NOT NULL UNIQUE
 	, loginPw VARCHAR(100) NOT NULL
 	, `name` VARCHAR(20) NOT NULL
+	, email VARCHAR(100) NOT NULL
 );
 
-ALTER TABLE `member` MODIFY COLUMN loginId VARCHAR(100) NOT NULL UNIQUE;
-
-CREATE TABLE board(
+CREATE TABLE category (
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
-	, `name` VARCHAR(20) NOT NULL COMMENT '게시판 이름'
+	, cgName VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE reply(
+CREATE TABLE menu (
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
-	, regDate DATETIME NOT NULL
-	, updateDate DATETIME NOT NULL
-	, memberId INT UNSIGNED NOT NULL
-	, relTypeCode VARCHAR(20) NOT NULL
-	, relId INT UNSIGNED NOT NULL
-	, `body` TEXT NOT NULL
+	,foodName VARCHAR(100) NOT NULL
+	, foodKgNum INT UNSIGNED 
 );
-
-CREATE TABLE `like`(
-	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
-		, articleId INT UNSIGNED NOT NULL
-		, memberId INT UNSIGNED NOT NULL
-)
-
-INSERT INTO article
-	SET regDate = NOW()
-			, updateDate = NOW()
-			, memberId = 1
-			, boardId = 1
-			, title = '공지1'
-			, `body` = '공지내용1';
-INSERT INTO article
-	SET regDate = NOW()
-			, updateDate = NOW()
-			, memberId = 3
-			, boardId = 2
-			, title = '제목2'
-			, `body` = '내용2';
-INSERT INTO article
-	SET regDate = NOW()
-			, updateDate = NOW()
-			, memberId = 2
-			, boardId = 2
-			, title = '제목3'
-			, `body` = '내용3';
+			
+INSERT INTO category
+	SET cgName = '한식';
+INSERT INTO category
+	SET cgName = '중식';
+INSERT INTO category
+	SET cgName = '양식';
+INSERT INTO category
+	SET cgName = '일식';
+INSERT INTO category
+	SET cgName = '분식';	
+INSERT INTO category
+	SET cgName = '패스트푸드'	;
 
 INSERT INTO `member`
 	SET regDate = NOW()
 			, updateDate = NOW()
+			, accessId = 1
 			, loginId = 'test1'
-			, loginPw = 'test1'
-			, `name` = '유저1';
+			, loginPw = SHA2('test1', 256)
+			, `name` = '유저1'
+			, email = 'test1@test.com';
+			
 INSERT INTO `member`
 	SET regDate = NOW()
 			, updateDate = NOW()
+			, accessId = 2
 			, loginId = 'test2'
-			, loginPw = 'test2'
-			, `name` = '유저2';
+			, loginPw = SHA2('test2', 256)
+			, `name` = '유저2'
+			, email = 'test2@test.com';
+			
 INSERT INTO `member`
 	SET regDate = NOW()
 			, updateDate = NOW()
-			, loginId = 'test3'
-			, loginPw = 'test3'
-			, `name` = '유저3';
-			
-INSERT INTO board
-	SET `name` = '공지사항';
-INSERT INTO board
-	SET `name` = '자유';
-			
-INSERT INTO reply
-	SET regDate = NOW()
-        , updateDate = NOW()
-        , memberId = 1
-        , relTypeCode = 'article'
-        , relId = 2
-        , `body` = '댓글테스트1';
-INSERT INTO reply
-	SET regDate = NOW()
-        , updateDate = NOW()
-        , memberId = 1
-        , relTypeCode = 'article'
-        , relId = 1
-        , `body` = '댓글테스트2';
-INSERT INTO reply
-	SET regDate = NOW()
-        , updateDate = NOW()
-        , memberId = 3
-        , relTypeCode = 'article'
-        , relId = 1
-        , `body` = '댓글테스트3';
-INSERT INTO reply
-	SET regDate = NOW()
-        , updateDate = NOW()
-        , memberId = 2
-        , relTypeCode = 'article'
-        , relId = 3
-        , `body` = '댓글테스트4';
-        
-INSERT INTO `like`
-	SET articleId = 1
-        , memberId = 1;
-			
-SELECT * FROM article;
-SELECT * FROM `member`;
-SELECT * FROM board;
-SELECT * FROM reply;
-SELECT * FROM `like`;
+			, accessId = 2
+			, loginId = 'test4'
+			, loginPw = SHA2('test4', 256)
+			, `name` = '유저4'
+			, email = 'test2@test.com';
 
+INSERT INTO `member`
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, accessId = 2
+			, loginId = 'test5'
+			, loginPw = SHA2('test5', 256)
+			, `name` = '유저5'
+			, email = 'test2@test.com';
+			
+INSERT INTO `member`
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, accessId = 2
+			, loginId = 'test6'
+			, loginPw = SHA2('test6', 256)
+			, `name` = '유저6'
+			, email = 'test2@test.com';
+			
+INSERT INTO `member`
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, accessId = 3
+			, loginId = 'test3'
+			, loginPw = SHA2('test3', 256)
+			, `name` = '유저3'
+			, email = 'test3@test.com';
+
+INSERT INTO restaurant
+	SET regDate = NOW()
+			, updateDate = NOW()
+			, cgId = 1
+			, `name` = '한식집'
+			, memberID = 1		
+						
+SELECT * FROM restaurant;
+SELECT * FROM `member`;
+SELECT * FROM category;
+SELECT * FROM menu;
+
+INSERT INTO restaurant
+(
+    regDate, updateDate, cgId, `name`, memberId
+)			
+SELECT NOW()
+        , NOW()
+        , FLOOR(RAND() * 6) + 1
+        , CONCAT('식당_', FLOOR(RAND() * 100000))
+        , 2
+    FROM restaurant;

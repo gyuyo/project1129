@@ -3,15 +3,14 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
 <!DOCTYPE html>
-<html>
+<html data-theme="light">
 <head>
 <meta charset="UTF-8">
 <title>${pageTitle }</title>
 <!-- 테일윈드CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- daisy UI -->
-<link
-	href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
 <!-- JQuery -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -22,83 +21,47 @@
 <link rel="stylesheet" href="/resource/common.css" />
 
 </head>
-<body class="header min-h-screen flex flex-col bg-black text-white">
-	<div class="h-20 flex container mx-auto text-3xl">
-		<div>
-			<div class="tooltip tooltip-bottom mt-4 text-3xl  ml-12" data-tip="LOGO">
-				<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/">
-					<button class="btn bg-black text-white hover:bg-gray-800 border-0 text-3xl"><i class="fa-regular fa-face-smile"></i></button>
-				</a>
-			</div>
-		</div>
-		<div class="grow"></div>
-		<ul class="flex">
-			<li>
-				<div class="tooltip tooltip-bottom mt-4" data-tip="HOME">
-					<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/">
-						<button class="btn bg-black text-white hover:bg-gray-800 border-0">
-							<i class="fa-solid fa-house text-2xl p-2"></i>
-						</button>
-					</a>
-				</div>
-			</li>
-			<li>
-				<div class="dropdown">
-  					<div tabindex="0" role="button" class="btn mt-4 bg-black text-white hover:bg-gray-800 border-0"><i class="fas fa-bars text-2xl p-2"></i></div>
-						<ul	tabindex="0" class="menu dropdown-content bg-black rounded-box z-[1] w-52 p-2 shadow">
-							<li>
-								<div class="hover:bg-gray-800">
-									<a href="${pageContext.request.contextPath}/usr/article/list?boardId=1">
-										<button>NOTICE</button>
-									</a>
-								</div>
-							</li>
-							<li>
-								<div class="hover:bg-gray-800">
-									<a href="${pageContext.request.contextPath}/usr/article/list?boardId=2">	
-										<button>FREE</button>
-									</a>
-								</div>
-							</li>
-						</ul>
-					</div>
-			<c:if test="${rq.getLoginedMemberId() == -1 }">
-				<li>
-					<div class="tooltip tooltip-bottom mt-4" data-tip="LOGIN">
-						<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/member/login">
-							<button	class="btn bg-black text-white hover:bg-gray-800 border-0">LOGIN</button>
-						</a>
-					</div>
-				</li>
-				<li>
-					<div class="tooltip tooltip-bottom mt-4" data-tip="JOIN">
-						<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/member/join">
-							<button	class="btn bg-black text-white hover:bg-gray-800 border-0">JOIN</button>
-						</a>
-					</div>
-				</li>
-			</c:if>
-			<c:if test="${rq.getLoginedMemberId() != -1 }">
-				<li>
-					<div class="tooltip tooltip-bottom mt-4" data-tip="LOGOUT">
-						<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/member/doLogout">
-							<button	class="btn bg-black text-white hover:bg-gray-800 border-0">LOGOUT</button>
-						</a>
-					</div>
-				</li>
-				<li>
-					<div class="tooltip tooltip-bottom mt-4" data-tip="MYPAGE">
-						<a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/member/myPage">
-							<button	class="btn bg-black text-white hover:bg-gray-800 border-0"><i class="fa-regular fa-user"></i></button>
-						</a>
-					</div>
-				</li>
-			</c:if>
-		</ul>
-	</div>
-
-	<section class="my-4 text-2xl">
-		<div class="container w-9/12 mx-auto">
-			<div>${pageTitle }</div>
-		</div>
-	</section>
+<body class="header min-h-screen flex flex-col">
+    <div class="bg-gradient-to-br from-[#4B4F54] to-[#707A8B] text-white py-4 shadow-md">
+        <nav class="max-w-screen-xl mx-auto flex justify-between items-center">
+            <ul class="flex space-x-8 items-center">
+                <li><a href="/" class="text-white font-semibold px-4 py-2 rounded-lg transition-all hover:text-[#B8B8B8]">홈</a></li>
+            </ul>
+            <ul class="flex space-x-8 items-center">
+                <c:if test="${rq.getLoginedMemberId() == -1 }">
+                    <li class="flex items-center min-h-[40px]">
+                        <div data-tip="LOGIN">
+                            <a href="${pageContext.request.contextPath}/usr/member/login">
+                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2">로그인</button>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="flex items-center min-h-[40px]">
+                        <div data-tip="JOIN">
+                            <a href="${pageContext.request.contextPath}/usr/member/accessIdChk">
+                                <button class="btn bg-[#3A4A55] text-white hover:bg-[#2C3B42] hover:shadow-xl border-0 rounded-lg px-5 py-2 transition-all">
+                                    회원가입
+                                </button>
+                            </a>
+                        </div>
+                    </li>
+                </c:if>
+                <c:if test="${rq.getLoginedMemberId() != -1 }">
+                    <li class="flex items-center min-h-[40px]">
+                        <div data-tip="LOGOUT">
+                            <a href="${pageContext.request.contextPath}/usr/member/doLogout">
+                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2">로그아웃</button>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="flex items-center min-h-[40px]">
+                        <div data-tip="MYPAGE">
+                            <a href="${pageContext.request.contextPath}/usr/member/myPage">
+                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2">내 정보</button>
+                            </a>
+                        </div>
+                    </li>
+                </c:if>
+            </ul>
+        </nav>
+    </div>
