@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.Member;
+import com.example.demo.dto.Menu;
 import com.example.demo.dto.ResultData;
 import com.example.demo.dto.Rq;
 import com.example.demo.service.MemberService;
@@ -175,7 +178,43 @@ public class UsrMemberController {
 		
 		return ResultData.from("S-1", "회원님의 이메일주소로 임시 패스워드가 발송되었습니다");
 	}
-
+	
+	
+	@GetMapping("/usr/member/addCart")
+	@ResponseBody
+	public ResultData addCart(HttpServletRequest req, int menuId) {
+		
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		memberService.addCart(rq.getLoginedMemberId(), menuId);
+		
+		return ResultData.from("S-1", "메뉴를 담았습니다.");
+	}
+	
+	@GetMapping("/usr/member/shoppingCart")
+	public String shoppingCart(HttpServletRequest req, Model model) {
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		List<Menu> menus = memberService.getMenuByLoignedMemberId(rq.getLoginedMemberId());
+		
+		model.addAttribute("menus", menus);
+		
+		return "usr/member/shoppingCart";
+	}
+	
+	@GetMapping("/usr/member/menuDelete")
+	public String menuDelete(HttpServletRequest req, Model model, int menuId) {
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		memberService.doMenuDelete(menuId);
+		
+		List<Menu> menus = memberService.getMenuByLoignedMemberId(rq.getLoginedMemberId());
+		
+		model.addAttribute("menus", menus);
+		
+		return "usr/member/shoppingCart";
+	}
+	
 	@GetMapping("/usr/member/doLogout")
 	@ResponseBody
 	public String doLogout(HttpServletRequest req) {

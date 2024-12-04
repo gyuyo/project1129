@@ -65,6 +65,7 @@
 						<th>업주명</th>
 						<th>배달팁</th>
 						<th>예상시간</th>
+						<th>추천수</th>
 					</tr>
 					<c:forEach var="restaurant" items="${restaurants }">
 						<tr>
@@ -73,6 +74,7 @@
 							<td>${restaurant.getLoginId() }</td>
 							<td>2000원</td>
 							<td>40분</td>
+							<td>${restaurant.getLike() }</td>
 						</tr>
 					</c:forEach>
 				</table>

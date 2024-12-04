@@ -18,12 +18,7 @@
 		            <div class="text-center text-white">
 		                <h3 class="text-xl font-semibold">서비스</h3>
 		                <div class="mt-4">
-		                    <c:if test="${rq.getLoginedMemberId() == -1 }">
-		                        <button class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2" onclick="alert('로그인 후 이용가능합니다.')">주문하기</button>
-		                    </c:if>
-		                    <c:if test="${rq.getLoginedMemberId() != -1 }">
-		                        <a href="/usr/restaurant/list?cgId=1" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
-		                    </c:if>
+		                    <a href="/usr/restaurant/list?cgId=1" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
 		                </div>
 		            </div>
 		        </div>
@@ -38,12 +33,7 @@
 		            <div class="text-center text-white">
 		                <h3 class="text-xl font-semibold">서비스</h3>
 		                <div class="mt-4">
-		                    <c:if test="${rq.getLoginedMemberId() == -1 }">
-		                        <button class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2" onclick="alert('로그인 후 이용가능합니다.')">주문하기</button>
-		                    </c:if>
-		                    <c:if test="${rq.getLoginedMemberId() != -1 }">
-		                        <a href="/usr/restaurant/list?cgId=2" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
-		                    </c:if>
+		                    <a href="/usr/restaurant/list?cgId=2" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
 		                </div>
 		            </div>
 		        </div>
@@ -58,12 +48,7 @@
 		            <div class="text-center text-white">
 		                <h3 class="text-xl font-semibold">서비스</h3>
 		                <div class="mt-4">
-		                    <c:if test="${rq.getLoginedMemberId() == -1 }">
-		                        <button class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2" onclick="alert('로그인 후 이용가능합니다.')">주문하기</button>
-		                    </c:if>
-		                    <c:if test="${rq.getLoginedMemberId() != -1 }">
-		                        <a href="/usr/restaurant/list?cgId=3" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
-		                    </c:if>
+		                    <a href="/usr/restaurant/list?cgId=3" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
 		                </div>
 		            </div>
 		        </div>
@@ -78,12 +63,7 @@
 		            <div class="text-center text-white">
 		                <h3 class="text-xl font-semibold">서비스</h3>
 		                <div class="mt-4">
-		                    <c:if test="${rq.getLoginedMemberId() == -1 }">
-		                        <button class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2" onclick="alert('로그인 후 이용가능합니다.')">주문하기</button>
-		                    </c:if>
-		                    <c:if test="${rq.getLoginedMemberId() != -1 }">
-		                        <a href="/usr/restaurant/list?cgId=4" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
-		                    </c:if>
+		                    <a href="/usr/restaurant/list?cgId=4" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
 		                </div>
 		            </div>
 		        </div>
@@ -98,12 +78,7 @@
 		            <div class="text-center text-white">
 		                <h3 class="text-xl font-semibold">서비스</h3>
 		                <div class="mt-4">
-		                    <c:if test="${rq.getLoginedMemberId() == -1 }">
-		                        <button class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2" onclick="alert('로그인 후 이용가능합니다.')">주문하기</button>
-		                    </c:if>
-		                    <c:if test="${rq.getLoginedMemberId() != -1 }">
-		                        <a href="/usr/restaurant/list?cgId=5" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
-		                    </c:if>
+		                	<a href="/usr/restaurant/list?cgId=5" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
 		                </div>
 		            </div>
 		        </div>
@@ -118,12 +93,7 @@
 		            <div class="text-center text-white">
 		                <h3 class="text-xl font-semibold">서비스</h3>
 		                <div class="mt-4">
-		                    <c:if test="${rq.getLoginedMemberId() == -1 }">
-		                        <button class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2" onclick="alert('로그인 후 이용가능합니다.')">주문하기</button>
-		                    </c:if>
-		                    <c:if test="${rq.getLoginedMemberId() != -1 }">
-		                        <a href="/usr/restaurant/list?cgId=6" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
-		                    </c:if>
+		                    <a href="/usr/restaurant/list?cgId=6" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg m-2 inline-block text-center">주문하기</a>
 		                </div>
 		            </div>
 		        </div>

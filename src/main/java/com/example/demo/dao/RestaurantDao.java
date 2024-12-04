@@ -16,9 +16,12 @@ public interface RestaurantDao {
 			<script>
 			SELECT r.*
 					, m.loginId
+					, IFNULL(SUM(l.point), 0) AS `like`
 				FROM Restaurant AS r
 				INNER JOIN `member` AS m
 				ON r.memberId = m.id
+				LEFT JOIN likePoint AS l
+				ON l.restaurantId = r.id
 				WHERE cgId = #{cgId}
 				<if test="searchKeyword != ''">
 					<choose>
@@ -27,24 +30,13 @@ public interface RestaurantDao {
 						</when>
 					</choose>
 				</if>
+				GROUP BY r.id
 				ORDER BY r.id DESC
 				LIMIT #{limitFrom}, 10
 			</script>
 			""")
 	List<Restaurant> getRestaurantsbyKgId(int cgId, int limitFrom, String searchType, String searchKeyword);
 	
-//				SELECT a.*
-//					, m.loginId
-//					, IFNULL(SUM(l.point), 0) AS `like`
-//				FROM article AS a
-//				INNER JOIN `member` AS m
-//				ON a.memberId = m.id
-//				LEFT JOIN likePoint AS l
-//				ON l.relTypeCode = 'article'
-//				GROUP BY a.id
-//				
-//				
-
 	@Select("""
 			<script>
 			SELECT COUNT(id)

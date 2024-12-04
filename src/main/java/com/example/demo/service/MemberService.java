@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MemberDao;
 import com.example.demo.dto.Member;
+import com.example.demo.dto.Menu;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -74,5 +75,17 @@ public class MemberService {
 
 	public List<Member> getMembersById(int id) {
 		return memberDao.getMembersById(id);
+	}
+
+	public List<Menu> getMenuByLoignedMemberId(int loginedMemberId) {
+		return memberDao.getMenuByLoignedMemberId(loginedMemberId);
+	}
+
+	public void doMenuDelete(int id) {
+		memberDao.doMenuDelete(id);
+	}
+
+	public void addCart(int loginedMemberId, int menuId) {
+		memberDao.addCart(loginedMemberId, menuId);
 	}
 }

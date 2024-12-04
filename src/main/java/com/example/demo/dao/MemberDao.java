@@ -2,12 +2,14 @@ package com.example.demo.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.dto.Member;
+import com.example.demo.dto.Menu;
 
 @Mapper
 public interface MemberDao {
@@ -69,5 +71,27 @@ public interface MemberDao {
 				WHERE a.id = #{id}
 			""")
 	List<Member> getMembersById(int id);
+	
+	@Select("""
+			SELECT *
+				FROM shoppingCart AS s
+				INNER JOIN menu AS m
+				ON s.menuId = m.id
+				WHERE s.memberId = #{loginedMemberId}
+			""")
+	List<Menu> getMenuByLoignedMemberId(int loginedMemberId);
+	
+	@Delete("""
+			DELETE FROM shoppingCart
+				WHERE id = #{id}
+			""")
+	void doMenuDelete(int id);
+	
+	@Insert("""
+			INSERT INTO shoppingCart
+				SET memberId = #{loginedMemberId}
+					, menuId = #{menuId}
+			""")
+	void addCart(int loginedMemberId, int menuId);
 	
 }

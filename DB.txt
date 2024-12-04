@@ -28,11 +28,14 @@ CREATE TABLE category (
 );
 
 CREATE TABLE menu (
-	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
-	,foodName VARCHAR(100) NOT NULL
-	, foodKgNum INT UNSIGNED 
+   id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+   , restaurantId INT UNSIGNED NOT NULL
+   , `name` VARCHAR(100) NOT NULL
+   , `description` TEXT NOT NULL
+   , price INT UNSIGNED NOT NULL
+   , readyTime INT UNSIGNED NOT NULL
 );
-			
+
 INSERT INTO category
 	SET cgName = '한식';
 INSERT INTO category
@@ -106,7 +109,28 @@ INSERT INTO restaurant
 			, cgId = 1
 			, `name` = '한식집'
 			, memberID = 1		
-						
+
+INSERT INTO menu
+	SET	restaurantId = 1
+			, `name` = '김치찌개'
+			, `description` = '김치찌개'
+			, price = 9000
+			, readyTime = 30
+			
+INSERT INTO menu
+	SET	restaurantId = 1
+			, `name` = '된장찌개'
+			, `description` = '된장찌개'
+			, price = 8000
+			, readyTime = 30
+			
+INSERT INTO menu
+	SET	restaurantId = 1
+			, `name` = '갈비찜'
+			, `description` = '갈비찜'
+			, price = 13000
+			, readyTime = 20
+			
 SELECT * FROM restaurant;
 SELECT * FROM `member`;
 SELECT * FROM category;
@@ -122,3 +146,7 @@ SELECT NOW()
         , CONCAT('식당_', FLOOR(RAND() * 100000))
         , 2
     FROM restaurant;
+    
+SELECT * 
+				FROM menu
+				WHERE restaurantId = 1

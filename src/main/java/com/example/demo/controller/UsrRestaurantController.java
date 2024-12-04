@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -9,15 +10,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.Category;
 import com.example.demo.dto.Menu;
+import com.example.demo.dto.Reply;
 import com.example.demo.dto.Restaurant;
+import com.example.demo.service.ReplyService;
 import com.example.demo.service.RestaurantService;
 
 @Controller
 public class UsrRestaurantController {
 	private RestaurantService restaurantService;
-
-	public UsrRestaurantController(RestaurantService restaurantService) {
+	private ReplyService replyService;
+	
+	public UsrRestaurantController(RestaurantService restaurantService, ReplyService replyService) {
 		this.restaurantService = restaurantService;
+		this.replyService = replyService;
 	}
 
 	@GetMapping("/usr/restaurant/list")
@@ -58,12 +63,16 @@ public class UsrRestaurantController {
 	public String list(Model model, int id) {
 		
 		List<Menu> menus = restaurantService.getMenusById(id);
+		List<Reply> replies = replyService.getReplies(id);
 		
 		Restaurant restaurant = restaurantService.getRestauranById(id);
-
+		
+		Collections.reverse(replies);
+		 
 		model.addAttribute("menus", menus);
 		model.addAttribute("restaurant", restaurant);
-
+		model.addAttribute("replies", replies);
+		
 		return "usr/restaurant/detail";
 	}
 }

@@ -48,19 +48,23 @@
                 </c:if>
                 <c:if test="${rq.getLoginedMemberId() != -1 }">
                     <li class="flex items-center min-h-[40px]">
-                        <div data-tip="LOGOUT">
-                            <a href="${pageContext.request.contextPath}/usr/member/doLogout">
-                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2">로그아웃</button>
+                        <div data-tip="SHOPPING CART">
+                            <a href="${pageContext.request.contextPath}/usr/member/shoppingCart">
+                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2"><i class="fa-solid fa-cart-shopping"></i></button>
                             </a>
                         </div>
                     </li>
-                    <li class="flex items-center min-h-[40px]">
-                        <div data-tip="MYPAGE">
-                            <a href="${pageContext.request.contextPath}/usr/member/myPage">
-                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2">내 정보</button>
-                            </a>
-                        </div>
-                    </li>
+					 <li class="flex items-center min-h-[40px]">
+	                    <details class="dropdown">
+	                        <summary class="btn m-1 bg-[#4B4F54] hover:bg-[#707A8B] text-white px-4 py-2 rounded-lg">
+	                            <i class="fa-solid fa-gear"></i>
+	                        </summary>
+	                        <ul class="menu dropdown-content rounded-box z-[1] w-52 p-2 shadow bg-gradient-to-br from-[#4B4F54] to-[#707A8B]">
+	                            <li><a href="${pageContext.request.contextPath}/usr/member/myPage">내 정보 보기</a></li>
+	                            <li><a href="${pageContext.request.contextPath}/usr/member/doLogout">로그아웃</a></li>
+	                        </ul>
+	                    </details>
+	                </li>
                 </c:if>
             </ul>
         </nav>
