@@ -34,8 +34,8 @@ public class RestaurantService {
 		return restaurantDao.getRestauranById(id);
 	}
 
-	public List<Menu> getMenusById(int id) {
-		return restaurantDao.getMenusById(id);
+	public List<Menu> getMenusByRestauranId(int getMenusByRestauranId) {
+		return restaurantDao.getMenusByRestauranId(getMenusByRestauranId);
 	}
 
 }

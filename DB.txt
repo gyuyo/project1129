@@ -32,8 +32,31 @@ CREATE TABLE menu (
    , restaurantId INT UNSIGNED NOT NULL
    , `name` VARCHAR(100) NOT NULL
    , `description` TEXT NOT NULL
+   , quantity INT UNSIGNED NOT NULL DEFAULT 1
    , price INT UNSIGNED NOT NULL
    , readyTime INT UNSIGNED NOT NULL
+);
+
+CREATE TABLE shoppingCart(
+   id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+   , memberId INT UNSIGNED NOT NULL
+   , menuId INT UNSIGNED NOT NULL
+);
+
+CREATE TABLE reply(
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+	, regDate DATETIME NOT NULL
+	, updateDate DATETIME NOT NULL
+	, memberId INT UNSIGNED NOT NULL
+	, restaurantId INT UNSIGNED NOT NULL
+	, `body` TEXT NOT NULL
+);
+
+CREATE TABLE likePoint(
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+	, memberId INT UNSIGNED NOT NULL
+	, restaurantId INT UNSIGNED NOT NULL
+	, `point` INT NOT NULL DEFAULT 1
 );
 
 INSERT INTO category
@@ -103,7 +126,7 @@ INSERT INTO `member`
 			, `name` = '유저3'
 			, email = 'test3@test.com';
 
-INSERT INTO restaurant
+insert into restaurant
 	SET regDate = NOW()
 			, updateDate = NOW()
 			, cgId = 1
@@ -116,26 +139,56 @@ INSERT INTO menu
 			, `description` = '김치찌개'
 			, price = 9000
 			, readyTime = 30
-			
-INSERT INTO menu
-	SET	restaurantId = 1
-			, `name` = '된장찌개'
-			, `description` = '된장찌개'
-			, price = 8000
-			, readyTime = 30
-			
-INSERT INTO menu
-	SET	restaurantId = 1
-			, `name` = '갈비찜'
-			, `description` = '갈비찜'
-			, price = 13000
-			, readyTime = 20
-			
-SELECT * FROM restaurant;
+
+INSERT INTO reply
+	SET regDate = NOW()
+        , updateDate = NOW()
+        , memberId = 1
+        , restaurantId = 2
+        , `body` = '댓글테스트1';
+INSERT INTO reply
+	SET regDate = NOW()
+        , updateDate = NOW()
+        , memberId = 1
+        , restaurantId = 1
+        , `body` = '댓글테스트2';
+INSERT INTO reply
+	SET regDate = NOW()
+        , updateDate = NOW()
+        , memberId = 3
+        , restaurantId = 1
+        , `body` = '댓글테스트3';
+INSERT INTO reply
+	SET regDate = NOW()
+        , updateDate = NOW()
+        , memberId = 2
+        , restaurantId = 3
+        , `body` = '댓글테스트4';	
+        		
+select * from restaurant;
 SELECT * FROM `member`;
 SELECT * FROM category;
 SELECT * FROM menu;
+select * from shoppingCart;
+select * from reply;
+select * from likePoint;
 
+SELECT *
+				FROM shoppingCart AS s
+				INNER JOIN menu AS m
+				ON s.menuId = m.id
+				WHERE s.memberId = 1
+	
+SELECT * 
+				FROM menu AS m
+				INNER JOIN shoppingCart AS s
+				ON s.menuId = m.id
+				WHERE restaurantId = 1
+				
+UPDATE menu
+				SET quantity = 1
+				WHERE id = 1
+	
 INSERT INTO restaurant
 (
     regDate, updateDate, cgId, `name`, memberId
@@ -147,6 +200,29 @@ SELECT NOW()
         , 2
     FROM restaurant;
     
-SELECT * 
-				FROM menu
-				WHERE restaurantId = 1
+    
+INSERT INTO menu
+(
+    restaurantId , `name` , `description` , price , readyTime
+)			
+SELECT FLOOR(RAND() * 100) + 1
+        , CONCAT('음식_', FLOOR(RAND() * 100000))
+        , CONCAT('설명_', FLOOR(RAND() * 100000))
+        , FLOOR(RAND() * 10000) + 1
+        , FLOOR(RAND() * 20) + 1
+    FROM menu;
+    
+    
+select * from shoppingCart
+
+SELECT *
+				FROM shoppingCart AS s
+				INNER JOIN menu AS m
+				ON s.menuId = m.id
+				WHERE s.memberId = 1
+				
+SELECT SUM(price * quantity) AS totalPrice
+				FROM shoppingCart AS s
+				INNER JOIN menu AS m
+				ON s.menuId = m.id
+				WHERE s.memberId = 1

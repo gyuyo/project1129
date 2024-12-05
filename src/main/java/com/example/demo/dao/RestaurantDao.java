@@ -71,7 +71,7 @@ public interface RestaurantDao {
 	@Select("""
 			SELECT * 
 				FROM menu
-				WHERE restaurantId = #{id}
+				WHERE restaurantId = #{getMenusByRestauranId}
 			""")
-	List<Menu> getMenusById(int id);
+	List<Menu> getMenusByRestauranId(int getMenusByRestauranId);
 }

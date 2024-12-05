@@ -12,17 +12,25 @@ import com.example.demo.dto.Category;
 import com.example.demo.dto.Menu;
 import com.example.demo.dto.Reply;
 import com.example.demo.dto.Restaurant;
+import com.example.demo.dto.Rq;
+import com.example.demo.dto.ShoppingCart;
+import com.example.demo.service.MenuService;
 import com.example.demo.service.ReplyService;
 import com.example.demo.service.RestaurantService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class UsrRestaurantController {
 	private RestaurantService restaurantService;
 	private ReplyService replyService;
+	private MenuService menuService;
 	
-	public UsrRestaurantController(RestaurantService restaurantService, ReplyService replyService) {
+	
+	public UsrRestaurantController(RestaurantService restaurantService, ReplyService replyService, MenuService menuService) {
 		this.restaurantService = restaurantService;
 		this.replyService = replyService;
+		this.menuService = menuService;
 	}
 
 	@GetMapping("/usr/restaurant/list")
@@ -60,18 +68,20 @@ public class UsrRestaurantController {
 	}
 
 	@GetMapping("/usr/restaurant/detail")
-	public String list(Model model, int id) {
+	public String list(HttpServletRequest req, Model model, int id) {
+		Rq rq = (Rq) req.getAttribute("rq");
 		
-		List<Menu> menus = restaurantService.getMenusById(id);
-		List<Reply> replies = replyService.getReplies(id);
-		
+		List<Menu> menus = restaurantService.getMenusByRestauranId(id);
+		List<Reply> replies = replyService.getRepliesByRestauranId(id);
 		Restaurant restaurant = restaurantService.getRestauranById(id);
+		List<ShoppingCart> shoppingCarts = menuService.getSctByLoginedMemberId(rq.getLoginedMemberId());
 		
 		Collections.reverse(replies);
-		 
+		
 		model.addAttribute("menus", menus);
 		model.addAttribute("restaurant", restaurant);
 		model.addAttribute("replies", replies);
+		model.addAttribute("shoppingCarts", shoppingCarts);
 		
 		return "usr/restaurant/detail";
 	}

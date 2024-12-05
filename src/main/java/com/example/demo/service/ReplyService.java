@@ -20,8 +20,8 @@ public class ReplyService {
 		replyDao.writeReply(loginedMemberId, restaurantId, body);
 	}
 
-	public List<Reply> getReplies(int restaurantId) {
-		return replyDao.getReplies(restaurantId);
+	public List<Reply> getRepliesByRestauranId(int restaurantId) {
+		return replyDao.getRepliesByRestauranId(restaurantId);
 	}
 	
 	public void modifyReply(int id, String body) {

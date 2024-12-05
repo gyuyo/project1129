@@ -30,7 +30,7 @@ public interface ReplyDao {
 				ON r.memberId = m.id
 				WHERE restaurantId = #{restaurantId}
 			""")
-	public List<Reply> getReplies(int restaurantId);
+	public List<Reply> getRepliesByRestauranId(int restaurantId);
 	
 	@Update("""
 			UPDATE reply

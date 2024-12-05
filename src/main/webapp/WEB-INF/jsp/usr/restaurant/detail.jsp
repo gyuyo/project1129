@@ -7,133 +7,141 @@
 <%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 
 <script>
-$(document).ready(function() {
-	if (${rq.getLoginedMemberId() != -1 }) {
+	$(document).ready(function() {
+		if (${rq.getLoginedMemberId() != -1 }) {
+			getLoginId();
+		}
+		getLikePoint();
+	})
+	
+	const getLoginId = function() {
+		$.ajax({
+			url : '/usr/member/getLoginId',
+			type : 'GET',
+			dataType : 'text',
+			success : function(data) {
+				$('#loginedMemberLoginId').html(data);
+			},
+			error : function(xhr, status, error) {
+				console.log(error);
+			}
+		})
+	}
+	
+	let originalForm = null;
+	let originalId = null;
+	
+	const replyModifyForm = function(i, body) {
+		
+		if (originalForm != null) {
+			replyModifyCancle(originalId);
+		}
+		
+		let replyForm = $('#' + i);
+		
+		originalForm = replyForm.html();
+		originalId = i;
+		
+		let addHtml = `
+			<form action="/usr/reply/doModify" method="post" onsubmit="replyForm_onSubmit(this); return false;">
+				<input type="hidden" name="id" value="\${i}" />
+				<input type="hidden" name="relId" value="${article.getId() }" />
+				<div class="border-2 border-slate-200 rounded-xl px-4 mt-2">
+					<div id="loginedMemberLoginId" class="mt-3 mb-2 font-semibold"></div>
+					<textarea style="resize:none;" class="textarea textarea-bordered textarea-md  w-full" name="body">\${body }</textarea>
+					<div class="flex justify-end mb-2">
+						<button onclick="replyModifyCancle(\${i});" type="button" class="btn btn-active btn-sm mr-2">취소</button>
+						<button class="btn btn-active btn-sm">수정</button>
+					</div>
+				</div>
+			</form>`;
+			
+		replyForm.html(addHtml);
 		getLoginId();
 	}
 	
-	getLikePoint();
-})
-
-const getLoginId = function() {
-	$.ajax({
-		url : '/usr/member/getLoginId',
-		type : 'GET',
-		dataType : 'text',
-		success : function(data) {
-			$('#loginedMemberLoginId').html(data);
-		},
-		error : function(xhr, status, error) {
-			console.log(error);
-		}
-	})
-}
-
-let originalForm = null;
-let originalId = null;
-
-const replyModifyForm = function(i, body) {
-	
-	if (originalForm != null) {
-		replyModifyCancle(originalId);
+	const replyModifyCancle = function(i) {
+		let replyForm = $('#' + i);
+		
+		replyForm.html(originalForm);
+		
+		originalForm = null;
+		originalId = null;
 	}
 	
-	let replyForm = $('#' + i);
-	
-	originalForm = replyForm.html();
-	originalId = i;
-	
-	let addHtml = `
-		<form action="/usr/reply/doModify" method="post" onsubmit="replyForm_onSubmit(this); return false;">
-			<input type="hidden" name="id" value="\${i}" />
-			<input type="hidden" name="relId" value="${article.getId() }" />
-			<div class="border-2 border-slate-200 rounded-xl px-4 mt-2">
-				<div id="loginedMemberLoginId" class="mt-3 mb-2 font-semibold"></div>
-				<textarea style="resize:none;" class="textarea textarea-bordered textarea-md  w-full" name="body">\${body }</textarea>
-				<div class="flex justify-end mb-2">
-					<button onclick="replyModifyCancle(\${i});" type="button" class="btn btn-active btn-sm mr-2">취소</button>
-					<button class="btn btn-active btn-sm">수정</button>
-				</div>
-			</div>
-		</form>`;
+	const clickLikePoint = async function() {
 		
-	replyForm.html(addHtml);
-	getLoginId();
-}
-
-const replyModifyCancle = function(i) {
-	let replyForm = $('#' + i);
-	
-	replyForm.html(originalForm);
-	
-	originalForm = null;
-	originalId = null;
-}
-
-const clickLikePoint = async function() {
-	
-	let likePointBtn = $('#likePointBtn > i').hasClass('fa-solid');
-	
-	await $.ajax({
-		url : '/usr/likePoint/clickLikePoint',
-		type : 'GET',
-		data : {
-			restaurantId : ${restaurant.getId() },
-			likePointBtn : likePointBtn
-		}
-	})
-	
-	await getLikePoint();
-}
-
-const getLikePoint = function() {
-	$.ajax({
-		url : '/usr/likePoint/getLikePoint',
-		type : 'GET',
-		data : {
-			restaurantId : ${restaurant.getId() }
-		},
-		dataType : 'json',
-		success : function(data) {
-			$('#likeCnt').html(data.data);
-			
-			if (data.success) {
-				$('#likePointBtn').html(`<i class="fa-solid fa-heart"></i>`);
-			} else {
-				$('#likePointBtn').html(`<i class="fa-regular fa-heart"></i>`);
+		let likePointBtn = $('#likePointBtn > i').hasClass('fa-solid');
+		
+		await $.ajax({
+			url : '/usr/likePoint/clickLikePoint',
+			type : 'GET',
+			data : {
+				restaurantId : ${restaurant.getId() },
+				likePointBtn : likePointBtn
 			}
-		},
-		error : function(xhr, status, error) {
-			console.log(error);
-		}
-	})
-}
-
-const doAddCart = function(menuId) {
+		})
+		
+		await getLikePoint();
+	}
 	
-	$.ajax({
-		url : '/usr/member/addCart',
-		type : 'GET',
-		data : {
-			menuId : menuId
-		},
-		dataType : 'json',
-		success : function(data) {
-			if (data.success) {
-                const messageDiv = document.getElementById('message');
-                messageDiv.classList.remove('hidden');
-
-                setTimeout(function() {
-                    messageDiv.classList.add('hidden');
-                }, 1500);
-            }
-        },
-		error : function(xhr, status, error) {
-			console.log(error);
-		}
-	})
+	const getLikePoint = function() {
+		$.ajax({
+			url : '/usr/likePoint/getLikePoint',
+			type : 'GET',
+			data : {
+				restaurantId : ${restaurant.getId() }
+			},
+			dataType : 'json',
+			success : function(data) {
+				$('#likeCnt').html(data.data);
+				
+				if (data.success) {
+					$('#likePointBtn').html(`<i class="fa-solid fa-heart"></i>`);
+				} else {
+					$('#likePointBtn').html(`<i class="fa-regular fa-heart"></i>`);
+				}
+			},
+			error : function(xhr, status, error) {
+				console.log(error);
+			}
+		})
+	}
 	
-}
+	const doAddCart = function(menuId) {
+		
+		$.ajax({
+			url : '/usr/member/addCart',
+			type : 'GET',
+			data : {
+				menuId : menuId
+			},
+			dataType : 'json',
+			success : function(data) {
+				if (data.success) {
+					if (data.data == null) {
+		                const messageDiv = document.getElementById('message');
+		                messageDiv.classList.remove('hidden');
+		
+		                setTimeout(function() {
+		                    messageDiv.classList.add('hidden');
+		                }, 1500);
+					} else { 
+						alert(data.resultMsg);
+						return;
+					}
+	            }
+				if (data.fail) {
+					alert(data.resultMsg);
+					return;
+	            }
+	        },
+			error : function(xhr, status, error) {
+				console.log(error);
+			}
+		})
+		
+	}
 
 </script>
 
@@ -153,9 +161,19 @@ const doAddCart = function(menuId) {
 				            <p class="text-sm text-gray-600">${menu.getDescription() }</p>
 				            <p class="text-xl font-semibold text-gray-800 mt-2">₩${menu.getPrice() }</p>
 							<input type="hidden" name="menuId" value="${menu.getId() }" />
-				            <button onclick="doAddCart(${menu.getId()});" class="mt-4 bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg w-full">
-				            장바구니에 추가
-				            </button>
+<%-- 							<c:forEach var="shoppingCart" items="${shoppingCarts }"> --%>
+<%-- 								<c:if test="${menu.getId() != shoppingCart.getMenuId() }"> --%>
+						            <button onclick="doAddCart(${menu.getId()});" class="mt-4 bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg w-full">
+						            장바구니에 추가
+						            </button>
+<%-- 					            </c:if> --%>
+<%-- 								<c:if test="${menu.getId() == shoppingCart.getMenuId() }"> --%>
+<%-- 						            <div id="cartQuantityButtons-${menu.getId()}" class="hidden mt-4"> --%>
+<%-- 						                <button id="increaseBtn-${menu.getId()}" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg w-full">+</button> --%>
+<%-- 						                <button id="decreaseBtn-${menu.getId()}" class="bg-gradient-to-b from-[#FECACA] to-[#F9A8D3] text-white py-2 px-4 rounded-lg w-full">-</button> --%>
+<!-- 						            </div> -->
+<%-- 					            </c:if> --%>
+<%-- 							</c:forEach> --%>
 				        </div>
 					</c:forEach>
 			    </div>

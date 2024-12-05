@@ -81,8 +81,8 @@ public class MemberService {
 		return memberDao.getMenuByLoignedMemberId(loginedMemberId);
 	}
 
-	public void doMenuDelete(int id) {
-		memberDao.doMenuDelete(id);
+	public void doMenuDelete(int menuId) {
+		memberDao.doMenuDelete(menuId);
 	}
 
 	public void addCart(int loginedMemberId, int menuId) {

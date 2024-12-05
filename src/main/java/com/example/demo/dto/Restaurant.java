@@ -16,6 +16,5 @@ public class Restaurant {
 	private String memberId;
 	private int like;
 	
-	
 	private String loginId;
 }
