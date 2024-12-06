@@ -55,26 +55,27 @@
 					<colgroup>
 					<col width="60"/>
 					<col />
-					<col width="80"/>
 					<col width="100"/>
 					<col width="120"/>
+					<col width="80"/>
+					<col width="80"/>
 					</colgroup>
 					<tr>
 						<th>번호</th>
 						<th>업체명</th>
-						<th>업주명</th>
 						<th>배달팁</th>
 						<th>예상시간</th>
 						<th>추천수</th>
+						<th>주문수</th>
 					</tr>
 					<c:forEach var="restaurant" items="${restaurants }">
 						<tr>
 							<td>${restaurant.getId() }</td>
 							<td class="hover:underline"><a href="detail?id=${restaurant.getId() }">${restaurant.getName() }</a></td>
-							<td>${restaurant.getLoginId() }</td>
 							<td>2000원</td>
 							<td>40분</td>
 							<td>${restaurant.getLike() }</td>
+							<td>${restaurant.getOrderCount() }</td>
 						</tr>
 					</c:forEach>
 				</table>

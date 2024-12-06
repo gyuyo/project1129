@@ -83,9 +83,9 @@ public interface MemberDao {
 	
 	@Delete("""
 			DELETE FROM shoppingCart
-				WHERE menuId = #{menuId}
+				WHERE memberId = #{memberId}
 			""")
-	void doMenuDelete(int menuId);
+	void doMenuDelete(int memberId);
 	
 	@Insert("""
 			INSERT INTO shoppingCart

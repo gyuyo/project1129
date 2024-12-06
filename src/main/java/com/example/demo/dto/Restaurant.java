@@ -15,6 +15,7 @@ public class Restaurant {
 	private String name;
 	private String memberId;
 	private int like;
+	private int orderCount;
 	
 	private String loginId;
 }

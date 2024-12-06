@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<c:set var="pageTitle" value="${category.getName() }" />
+<c:set var="pageTitle" value="${restaurant.getName() }" />
 
 <%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 
@@ -126,6 +126,10 @@
 		                setTimeout(function() {
 		                    messageDiv.classList.add('hidden');
 		                }, 1500);
+		                
+		                $('#addCartButton-' + menuId).remove();
+
+		                
 					} else { 
 						alert(data.resultMsg);
 						return;
@@ -142,6 +146,42 @@
 		})
 		
 	}
+	
+	function changeQuantity(menuId, delta) {
+	    var $quantityElement = $("#quantity-" + menuId);
+		
+	    console.log($quantityElement);
+	    
+	    var currentQuantity = parseInt($quantityElement.text());
+	    var newQuantity = currentQuantity + delta;
+		
+	    console.log(currentQuantity);
+	    console.log(newQuantity);
+	    
+	    if (newQuantity <= 0) {
+	        var isConfirmed = confirm("메뉴를 취소하시겠습니까?");
+	        if (isConfirmed) {
+	            window.location.href = "/usr/member/menuDelete?menuId=" + menuId;
+	        } else {
+	            return; 
+	        }
+	    } else {
+	        $quantityElement.text(newQuantity);
+	        updateMenuQuantity(menuId, newQuantity);
+	    }
+	}
+	
+	const updateMenuQuantity = function(menuId, newQuantity) {
+	    $.ajax({
+	        url: '/usr/menu/updateQuantity',
+	        type: 'POST',
+	        data: {
+	            menuId: menuId,
+	            quantity: newQuantity
+	        },
+	        dataType: 'json',
+	    });
+	}
 
 </script>
 
@@ -156,24 +196,38 @@
 			    </div>
 			    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 					<c:forEach var="menu" items="${menus }">
+						<c:set var="chk" value="true" />
 				        <div class="relative group w-full h-64 bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 flex flex-col justify-center items-center p-4">
 				            <h4 class="text-lg font-semibold text-gray-800">${menu.getName() }</h4>
 				            <p class="text-sm text-gray-600">${menu.getDescription() }</p>
 				            <p class="text-xl font-semibold text-gray-800 mt-2">₩${menu.getPrice() }</p>
-							<input type="hidden" name="menuId" value="${menu.getId() }" />
-<%-- 							<c:forEach var="shoppingCart" items="${shoppingCarts }"> --%>
-<%-- 								<c:if test="${menu.getId() != shoppingCart.getMenuId() }"> --%>
-						            <button onclick="doAddCart(${menu.getId()});" class="mt-4 bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg w-full">
+							<c:forEach var="shoppingCart" items="${shoppingCarts }">
+								<c:if test="${chk}">
+									<c:choose>
+									<c:when test="${menu.getId() == shoppingCart.getMenuId() }">
+										<c:set var="addCartBtn" value="0" />
+										<c:set var="chk" value="false" />
+									</c:when>
+									<c:otherwise>
+										<c:set var="addCartBtn" value="1" />
+									</c:otherwise>
+					            	</c:choose>
+					            </c:if>
+							</c:forEach>
+							<c:choose>
+								<c:when test="${addCartBtn == 0}">
+							    <div class="flex items-center space-x-4" id="quantity-buttons-${menu.getId()}">
+									<button onclick="changeQuantity(${menu.getId()}, -1)" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">−</button>
+										<div id="quantity-${menu.getId()}" class="text-lg font-semibold w-8 text-center">${menu.getQuantity()}</div>
+									<button onclick="changeQuantity(${menu.getId()}, 1)" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">+</button>
+								</div>
+								</c:when>
+								<c:otherwise>
+						            <button onclick="doAddCart(${menu.getId()});" id="addCartButton-${menu.getId()}" class="mt-4 bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg w-full">
 						            장바구니에 추가
 						            </button>
-<%-- 					            </c:if> --%>
-<%-- 								<c:if test="${menu.getId() == shoppingCart.getMenuId() }"> --%>
-<%-- 						            <div id="cartQuantityButtons-${menu.getId()}" class="hidden mt-4"> --%>
-<%-- 						                <button id="increaseBtn-${menu.getId()}" class="bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg w-full">+</button> --%>
-<%-- 						                <button id="decreaseBtn-${menu.getId()}" class="bg-gradient-to-b from-[#FECACA] to-[#F9A8D3] text-white py-2 px-4 rounded-lg w-full">-</button> --%>
-<!-- 						            </div> -->
-<%-- 					            </c:if> --%>
-<%-- 							</c:forEach> --%>
+								</c:otherwise>
+							</c:choose>
 				        </div>
 					</c:forEach>
 			    </div>
@@ -219,7 +273,6 @@
 <section class="my-8">
 	<div class="container mx-auto px-4 text-base w-9/12">
 		<div class="text-lg">댓글</div>
-		
 		<c:forEach var="reply" items="${replies }">
 			<div id="${reply.getId() }" class="py-2 border-b-2 border-slate-200 pl-20">
 				<div class="flex justify-between items-center">

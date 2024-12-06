@@ -227,11 +227,7 @@ public class UsrMemberController {
 
 		List<Menu> menus = memberService.getMenuByLoignedMemberId(rq.getLoginedMemberId());
 		
-		Menu menu = menuService.getTotalPrice(rq.getLoginedMemberId());
-		
 		model.addAttribute("menus", menus);
-		model.addAttribute("menu", menu);
-		
 		
 		return "usr/member/shoppingCart";
 	}

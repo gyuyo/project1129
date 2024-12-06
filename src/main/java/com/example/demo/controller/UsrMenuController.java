@@ -24,7 +24,6 @@ public class UsrMenuController {
 	@PostMapping("/usr/menu/updateQuantity")
 	@ResponseBody
 	public ResultData updateQuantity(int menuId, int quantity) {
-		
 		menuService.updateQuantity(menuId, quantity);
 		
 		return ResultData.from("S-1", "수량을 수정하였습니다.");
