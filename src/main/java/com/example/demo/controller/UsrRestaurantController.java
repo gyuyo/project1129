@@ -14,7 +14,7 @@ import com.example.demo.dto.Reply;
 import com.example.demo.dto.Restaurant;
 import com.example.demo.dto.Rq;
 import com.example.demo.dto.ShoppingCart;
-import com.example.demo.service.MenuService;
+import com.example.demo.service.CustomerService;
 import com.example.demo.service.ReplyService;
 import com.example.demo.service.RestaurantService;
 
@@ -24,13 +24,12 @@ import jakarta.servlet.http.HttpServletRequest;
 public class UsrRestaurantController {
 	private RestaurantService restaurantService;
 	private ReplyService replyService;
-	private MenuService menuService;
+	private CustomerService customerService;
 	
-	
-	public UsrRestaurantController(RestaurantService restaurantService, ReplyService replyService, MenuService menuService) {
+	public UsrRestaurantController(RestaurantService restaurantService, ReplyService replyService, CustomerService customerService) {
 		this.restaurantService = restaurantService;
 		this.replyService = replyService;
-		this.menuService = menuService;
+		this.customerService = customerService;
 	}
 
 	@GetMapping("/usr/restaurant/list")
@@ -68,13 +67,13 @@ public class UsrRestaurantController {
 	}
 
 	@GetMapping("/usr/restaurant/detail")
-	public String list(HttpServletRequest req, Model model, int id) {
+	public String detail(HttpServletRequest req, Model model, int id) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
 		List<Menu> menus = restaurantService.getMenusByRestauranId(id);
 		List<Reply> replies = replyService.getRepliesByRestauranId(id);
 		Restaurant restaurant = restaurantService.getRestauranById(id);
-		List<ShoppingCart> shoppingCarts = menuService.getSctByLoginedMemberId(rq.getLoginedMemberId());
+		List<ShoppingCart> shoppingCarts = customerService.getSctByLoginedMemberId(rq.getLoginedMemberId());
 		
 		Collections.reverse(replies);
 		
@@ -85,4 +84,16 @@ public class UsrRestaurantController {
 		
 		return "usr/restaurant/detail";
 	}
+	
+	@GetMapping("/usr/restaurant/manageShop")
+	public String manageShop(HttpServletRequest req, Model model) {
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		List<Restaurant> restaurants = restaurantService.getRestaurantByOwnerId(rq.getLoginedMemberId());
+		
+		model.addAttribute("restaurants", restaurants);
+		
+		return "usr/restaurant/myList";
+	}
+	
 }

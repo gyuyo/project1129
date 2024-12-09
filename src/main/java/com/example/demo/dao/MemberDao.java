@@ -73,25 +73,10 @@ public interface MemberDao {
 	List<Member> getMembersById(int id);
 	
 	@Select("""
-			SELECT *
-				FROM shoppingCart AS s
-				INNER JOIN menu AS m
-				ON s.menuId = m.id
-				WHERE s.memberId = #{loginedMemberId}
+			SELECT accessId
+				FROM `member`
+				WHERE id = #{loginedMemberId}
 			""")
-	List<Menu> getMenuByLoignedMemberId(int loginedMemberId);
-	
-	@Delete("""
-			DELETE FROM shoppingCart
-				WHERE memberId = #{memberId}
-			""")
-	void doMenuDelete(int memberId);
-	
-	@Insert("""
-			INSERT INTO shoppingCart
-				SET memberId = #{loginedMemberId}
-					, menuId = #{menuId}
-			""")
-	void addCart(int loginedMemberId, int menuId);
+	int getaccessIdChk(int loginedMemberId);
 	
 }

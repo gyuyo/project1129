@@ -77,15 +77,8 @@ public class MemberService {
 		return memberDao.getMembersById(id);
 	}
 
-	public List<Menu> getMenuByLoignedMemberId(int loginedMemberId) {
-		return memberDao.getMenuByLoignedMemberId(loginedMemberId);
+	public int getaccessIdChk(int loginedMemberId) {
+		return memberDao.getaccessIdChk(loginedMemberId);
 	}
 
-	public void doMenuDelete(int memberId) {
-		memberDao.doMenuDelete(memberId);
-	}
-
-	public void addCart(int loginedMemberId, int menuId) {
-		memberDao.addCart(loginedMemberId, menuId);
-	}
 }

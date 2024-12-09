@@ -11,4 +11,9 @@ public class OrderMenu {
 	private int id;
 	private int orderId;
 	private int menuId;
+	private String name;
+	private int quantity;
+	private int price;
+	
+	private int totalPrice;
 }

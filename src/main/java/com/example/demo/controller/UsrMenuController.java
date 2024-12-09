@@ -34,7 +34,7 @@ public class UsrMenuController {
 	public ResultData getTotalPrice(HttpServletRequest req) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
-		Menu menu = menuService.getTotalPrice(rq.getLoginedMemberId());
+		Menu menu = menuService.getTotalPriceByLoginedId(rq.getLoginedMemberId());
 		
 		return ResultData.from("S-1", "합계 금액",menu);
 	}

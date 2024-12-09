@@ -47,9 +47,69 @@
                     </li>
                 </c:if>
                 <c:if test="${rq.getLoginedMemberId() != -1 }">
-                    <li class="flex items-center min-h-[40px]">
+                <script>
+                $(document).ready(function() {
+                	orderInfo();
+            	});
+                
+                function orderInfo() {
+            		$.ajax({
+            	        url: '/usr/order/addOrderInfo', 
+            	        type: 'GET',  
+            	        dataType: 'json',  
+            	        success: function(data) {
+            	        	if(data.data != null){
+            	        		$("#orderInfo").removeClass("hidden");
+            	        	}
+            	        },
+            	        error: function(xhr, status, error) {
+            	            console.error("AJAX 요청 실패:", status, error);
+            	        }
+            	    });
+            	}
+                </script>
+                    <li id="orderInfo" class="hidden flex items-center min-h-[40px]">
+                        <div data-tip="ORDER INFO">
+                            <a href="${pageContext.request.contextPath}/usr/order/orderPage?loginId=${rq.getLoginedMemberId() }">
+                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2"><i class="fa-solid fa-jet-fighter"></i></button>
+                            </a>
+                        </div>
+                    </li>
+                    <script>
+                $(document).ready(function() {
+                	accessIdChk();
+            	});
+                
+                function accessIdChk() {
+            		$.ajax({
+            	        url: '/usr/owner/accessIdChk', 
+            	        type: 'GET',  
+            	        dataType: 'json',  
+            	        success: function(data) {
+            	        	if(data.data == 2){
+            	        		$("#shoppingCartBtn").addClass("hidden");
+            	        		$("#orderChkBtn").removeClass("hidden");
+            	        	} else {
+            	        		$("#shoppingCartBtn").removeClass("hidden");
+            	        		$("#orderChkBtn").addClass("hidden");
+            	        	}
+            	        },
+            	        error: function(xhr, status, error) {
+            	            console.error("AJAX 요청 실패:", status, error);
+            	        }
+            	    });
+            	}
+                </script>
+                    <li id="orderChkBtn" class="flex items-center min-h-[40px]">
+                        <div data-tip="ORDER CHK">
+                            <a href="${pageContext.request.contextPath}/usr/order/orderList">
+                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2"><i class="fa-solid fa-clipboard-check"></i></button>
+                            </a>
+                        </div>
+                    </li>
+                    <li id="shoppingCartBtn" class="flex items-center min-h-[40px]">
                         <div data-tip="SHOPPING CART">
-                            <a href="${pageContext.request.contextPath}/usr/member/shoppingCart">
+                            <a href="${pageContext.request.contextPath}/usr/customer/shoppingCart">
                                 <button class="text-white hover:text-[#B8B8B8] px-4 py-2"><i class="fa-solid fa-cart-shopping"></i></button>
                             </a>
                         </div>

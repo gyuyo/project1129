@@ -12,7 +12,6 @@
 	    updateTotalPrice();
 	});
 	
-	
 	async function changeQuantity(menuId, delta, unitPrice) {
 	    var $quantityElement = $("#quantity-" + menuId);
 	    var $priceElement = $("#price-" + menuId);
@@ -20,9 +19,6 @@
 	    var currentQuantity = parseInt($quantityElement.text());
 	    var newQuantity = currentQuantity + delta;
 	    
-// 	    console.log(currentQuantity);
-// 	    console.log(newQuantity);
-	
 	    if (newQuantity <= 0) {
 	        var isConfirmed = confirm("메뉴를 취소하시겠습니까?");
 	        if (isConfirmed) {
@@ -33,7 +29,6 @@
 	    } else {
 	        $quantityElement.text(newQuantity);
 	        $priceElement.text((unitPrice * newQuantity));
-// 	        .toLocaleString()
 	        
 	        await updateMenuQuantity(menuId, newQuantity);
 	
@@ -60,9 +55,7 @@
 	        dataType: 'json',  
 	        success: function(data) {
 	        	$('#totalPrice').text('₩' + data.data.totalPrice + '원');
-// 	        	.toLocaleString()
 	        	$('#modalTotalPrice').text('₩' + data.data.totalPrice + '원');
-// 	        	.toLocaleString()
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("AJAX 요청 실패:", status, error);

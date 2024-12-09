@@ -74,4 +74,11 @@ public interface RestaurantDao {
 				WHERE restaurantId = #{getMenusByRestauranId}
 			""")
 	List<Menu> getMenusByRestauranId(int getMenusByRestauranId);
+	
+	@Select("""
+			SELECT *
+				FROM restaurant
+				WHERE memberId = #{loginedMemberId}
+			""")
+	List<Restaurant> getRestaurantByOwnerId(int loginedMemberId);
 }

@@ -11,6 +11,7 @@ public class ShoppingCart {
 	private int id;
 	private int memberId;
 	private int menuId;
+	private int quantity;
 	
 	private int restaurantId;
 }

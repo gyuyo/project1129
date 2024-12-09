@@ -126,7 +126,7 @@
 		            <div class="text-center text-white">
 		                <h3 class="text-xl font-semibold">서비스</h3>
 		                <div class="mt-4">
-		                    <a href="/manage-shop" class="bg-[#FF7F50] text-white py-2 px-4 rounded-lg m-2 cursor-pointer">내 업장 관리</a>
+		                    <a href="/usr/restaurant/manageShop" class="bg-[#FF7F50] text-white py-2 px-4 rounded-lg m-2 cursor-pointer">내 업장 관리</a>
 		                </div>
 		            </div>
 		        </div>

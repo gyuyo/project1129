@@ -12,6 +12,7 @@
 			getLoginId();
 		}
 		getLikePoint();
+		updateTotalPrice();
 	})
 	
 	const getLoginId = function() {
@@ -108,10 +109,10 @@
 		})
 	}
 	
-	const doAddCart = function(menuId) {
+	const doAddCart = function(menuId, quantity, restaurantId) {
 		
 		$.ajax({
-			url : '/usr/member/addCart',
+			url : '/usr/customer/addCart',
 			type : 'GET',
 			data : {
 				menuId : menuId
@@ -128,7 +129,14 @@
 		                }, 1500);
 		                
 		                $('#addCartButton-' + menuId).remove();
-
+	                    const quantityButtons = `
+	                        <div class="flex items-center space-x-4" id="quantity-buttons-\${menuId}">
+	                            <button onclick="changeQuantity(\${menuId}, -1, \${restaurantId})" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">−</button>
+	                            <div id="quantity-\${menuId}" class="text-lg font-semibold w-8 text-center">\${quantity}</div>
+	                            <button onclick="changeQuantity(\${menuId}, 1, \${restaurantId})" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">+</button>
+	                        </div>
+	                    `;
+	                    $('#menu-' + menuId).append(quantityButtons);
 		                
 					} else { 
 						alert(data.resultMsg);
@@ -147,32 +155,29 @@
 		
 	}
 	
-	function changeQuantity(menuId, delta) {
+	async function changeQuantity(menuId, delta, restaurantId) {
 	    var $quantityElement = $("#quantity-" + menuId);
 		
-	    console.log($quantityElement);
-	    
 	    var currentQuantity = parseInt($quantityElement.text());
 	    var newQuantity = currentQuantity + delta;
-		
-	    console.log(currentQuantity);
-	    console.log(newQuantity);
 	    
 	    if (newQuantity <= 0) {
 	        var isConfirmed = confirm("메뉴를 취소하시겠습니까?");
 	        if (isConfirmed) {
-	            window.location.href = "/usr/member/menuDelete?menuId=" + menuId;
+	            window.location.href = "/usr/customer/menuDelete?menuId=" + menuId + "&restaurantId=" + restaurantId;
 	        } else {
 	            return; 
 	        }
 	    } else {
 	        $quantityElement.text(newQuantity);
-	        updateMenuQuantity(menuId, newQuantity);
+	        
+	        await updateMenuQuantity(menuId, newQuantity);
+	        await updateTotalPrice();
 	    }
 	}
 	
 	const updateMenuQuantity = function(menuId, newQuantity) {
-	    $.ajax({
+	    return $.ajax({
 	        url: '/usr/menu/updateQuantity',
 	        type: 'POST',
 	        data: {
@@ -180,6 +185,20 @@
 	            quantity: newQuantity
 	        },
 	        dataType: 'json',
+	    });
+	}
+	
+	function updateTotalPrice() {
+		return $.ajax({
+	        url: '/usr/menu/getTotalPrice', 
+	        type: 'GET',  
+	        dataType: 'json',  
+	        success: function(data) {
+	        	$('#totalPrice').text('₩' + data.data.totalPrice + '원');
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("AJAX 요청 실패:", status, error);
+	        }
 	    });
 	}
 
@@ -207,6 +226,7 @@
 									<c:when test="${menu.getId() == shoppingCart.getMenuId() }">
 										<c:set var="addCartBtn" value="0" />
 										<c:set var="chk" value="false" />
+										<c:set var="quantity" value="${shoppingCart.getQuantity() }" />
 									</c:when>
 									<c:otherwise>
 										<c:set var="addCartBtn" value="1" />
@@ -216,24 +236,31 @@
 							</c:forEach>
 							<c:choose>
 								<c:when test="${addCartBtn == 0}">
-							    <div class="flex items-center space-x-4" id="quantity-buttons-${menu.getId()}">
-									<button onclick="changeQuantity(${menu.getId()}, -1)" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">−</button>
-										<div id="quantity-${menu.getId()}" class="text-lg font-semibold w-8 text-center">${menu.getQuantity()}</div>
-									<button onclick="changeQuantity(${menu.getId()}, 1)" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">+</button>
-								</div>
+								    <div class="flex items-center space-x-4" id="quantity-buttons-${menu.getId()}">
+				                        <button onclick="changeQuantity(${menu.getId()}, -1, ${restaurant.getId()})" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">−</button>
+				                        <div id="quantity-${menu.getId()}" class="text-lg font-semibold w-8 text-center">${quantity}</div>
+				                        <button onclick="changeQuantity(${menu.getId()}, 1, ${restaurant.getId()})" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">+</button>
+				                    </div>
 								</c:when>
 								<c:otherwise>
-						            <button onclick="doAddCart(${menu.getId()});" id="addCartButton-${menu.getId()}" class="mt-4 bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg w-full">
-						            장바구니에 추가
-						            </button>
+						            <button onclick="doAddCart(${menu.getId()}, 1, ${restaurant.getId()});" id="addCartButton-${menu.getId()}" class="mt-4 bg-gradient-to-b from-[#6EC1E4] to-[#4A9EC3] text-white py-2 px-4 rounded-lg w-full">
+				                    장바구니에 추가
+				                    </button>
+				                    <div id="menu-${menu.getId()}"></div>
 								</c:otherwise>
 							</c:choose>
 				        </div>
 					</c:forEach>
 			    </div>
-			    <div id="message" class="fixed bottom-0 left-0 right-0 bg-blue-500 text-white p-4 rounded-lg hidden text-center">
-			        메뉴를 담았습니다.
-			    </div>
+			    <c:if test="${shoppingCarts.size() > 0}">
+			    <div id="cartSummary" class="fixed bottom-0 left-0 right-0 bg-gray-500 text-white p-4 rounded-t-lg flex justify-between items-center">
+		            <div>합계금액: <span id="totalPrice"></span></div>
+		            <a href="${pageContext.request.contextPath}/usr/customer/shoppingCart" onclick="goToCart()" class="bg-[#4A9EC3] text-white py-2 px-4 rounded-lg">장바구니가기</a>
+		        </div>
+		        </c:if>
+			    <div id="message" class="fixed bottom-16 left-0 right-0 bg-gray-500 text-white p-4 rounded-b-lg hidden text-center z-50">
+		            메뉴를 담았습니다.
+		        </div>
 			</section>
 		</div>
 		<div class="flex justify-around mt-8">

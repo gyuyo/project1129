@@ -1,11 +1,12 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dao.LikePointDao;
 import com.example.demo.dao.OrderDao;
-import com.example.demo.dto.LikePoint;
 import com.example.demo.dto.Order;
+import com.example.demo.dto.OrderMenu;
 
 @Service
 public class OrderService {
@@ -16,8 +17,8 @@ public class OrderService {
 		this.orderDao = orderDao;
 	}
 	
-	public void doMenuOrder(int orderId, int menuId) {
-		orderDao.doMenuOrder(orderId, menuId);
+	public void doMenuOrder(int orderId, int menuId, int quantity) {
+		orderDao.doMenuOrder(orderId, menuId, quantity);
 	}
 
 	public void doOrder(int orderMemberId, String restaurantId) {
@@ -31,5 +32,32 @@ public class OrderService {
 	public void doOrderDelete(int loginedMemberId) {
 		orderDao.doOrderDelete(loginedMemberId);
 	}
+
+	public void doOrderMenuDelete(int loginedMemberId) {
+		orderDao.doOrderMenuDelete(loginedMemberId);
+	}
 	
+	public List<OrderMenu> getOrderMenus(int loginedMemberId) {
+		return orderDao.getOrderMenus(loginedMemberId);
+	}
+
+	public int getTotalPriceByOrderId(int loginedMemberId) {
+		return orderDao.getTotalPriceByOrderId(loginedMemberId);
+	}
+
+	public Order getOrderByLoginedMemberId(int loginedMemberId) {
+		return orderDao.getOrderByLoginedMemberId(loginedMemberId);
+	}
+
+	public List<Order> gerOrderByOwnerId(int loginedMemberId) {
+		return orderDao.gerOrderByOwnerId(loginedMemberId);
+	}
+
+	public int getOrderMenuCnt(int loginedMemberId) {
+		return orderDao.getOrderMenuCnt(loginedMemberId);
+	}
+
+	public int getOrderTotalPrice(int loginedMemberId) {
+		return orderDao.getOrderTotalPrice(loginedMemberId);
+	}
 }

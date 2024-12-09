@@ -9,6 +9,7 @@ CREATE TABLE restaurant (
 	, `name` VARCHAR(100) NOT NULL UNIQUE
 	, cgId INT UNSIGNED NOT NULL
 	, memberId INT UNSIGNED NOT NULL
+	, orderCount INT UNSIGNED NOT NULL DEFAULT 0
 );
 
 CREATE TABLE `member`(
@@ -32,7 +33,6 @@ CREATE TABLE menu (
    , restaurantId INT UNSIGNED NOT NULL
    , `name` VARCHAR(100) NOT NULL
    , `description` TEXT NOT NULL
-   , quantity INT UNSIGNED NOT NULL DEFAULT 1
    , price INT UNSIGNED NOT NULL
    , readyTime INT UNSIGNED NOT NULL
 );
@@ -41,6 +41,7 @@ CREATE TABLE shoppingCart(
    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
    , memberId INT UNSIGNED NOT NULL
    , menuId INT UNSIGNED NOT NULL
+   , quantity INT UNSIGNED NOT NULL DEFAULT 1
 );
 
 CREATE TABLE reply(
@@ -57,6 +58,20 @@ CREATE TABLE likePoint(
 	, memberId INT UNSIGNED NOT NULL
 	, restaurantId INT UNSIGNED NOT NULL
 	, `point` INT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE `order`(
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+	, orderMemberId INT UNSIGNED NOT NULL UNIQUE
+	, restaurantId INT UNSIGNED NOT NULL
+	, orderStatus VARCHAR(50) NOT NULL DEFAULT '대기 중'
+);
+
+CREATE TABLE orderMenu (
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+	, orderId INT UNSIGNED NOT NULL
+	, menuId INT UNSIGNED NOT NULL	
+	, quantity INT UNSIGNED NOT NULL DEFAULT 1
 );
 
 INSERT INTO category
@@ -93,53 +108,38 @@ INSERT INTO `member`
 INSERT INTO `member`
 	SET regDate = NOW()
 			, updateDate = NOW()
-			, accessId = 2
-			, loginId = 'test4'
-			, loginPw = SHA2('test4', 256)
-			, `name` = '유저4'
-			, email = 'test2@test.com';
-
-INSERT INTO `member`
-	SET regDate = NOW()
-			, updateDate = NOW()
-			, accessId = 2
-			, loginId = 'test5'
-			, loginPw = SHA2('test5', 256)
-			, `name` = '유저5'
-			, email = 'test2@test.com';
-			
-INSERT INTO `member`
-	SET regDate = NOW()
-			, updateDate = NOW()
-			, accessId = 2
-			, loginId = 'test6'
-			, loginPw = SHA2('test6', 256)
-			, `name` = '유저6'
-			, email = 'test2@test.com';
-			
-INSERT INTO `member`
-	SET regDate = NOW()
-			, updateDate = NOW()
 			, accessId = 3
 			, loginId = 'test3'
 			, loginPw = SHA2('test3', 256)
 			, `name` = '유저3'
 			, email = 'test3@test.com';
 
-insert into restaurant
+INSERT INTO restaurant
 	SET regDate = NOW()
 			, updateDate = NOW()
 			, cgId = 1
 			, `name` = '한식집'
-			, memberID = 1		
+			, memberID = 2;
 
 INSERT INTO menu
 	SET	restaurantId = 1
 			, `name` = '김치찌개'
 			, `description` = '김치찌개'
 			, price = 9000
-			, readyTime = 30
-
+			, readyTime = 30;
+INSERT INTO menu
+	SET	restaurantId = 1
+			, `name` = '된장찌개'
+			, `description` = '된장찌개'
+			, price = 8000
+			, readyTime = 20;
+INSERT INTO menu
+	SET	restaurantId = 1
+			, `name` = '갈비찜'
+			, `description` = '갈비찜'
+			, price = 12000
+			, readyTime = 40;
+			
 INSERT INTO reply
 	SET regDate = NOW()
         , updateDate = NOW()
@@ -164,31 +164,7 @@ INSERT INTO reply
         , memberId = 2
         , restaurantId = 3
         , `body` = '댓글테스트4';	
-        		
-select * from restaurant;
-SELECT * FROM `member`;
-SELECT * FROM category;
-SELECT * FROM menu;
-select * from shoppingCart;
-select * from reply;
-select * from likePoint;
-
-SELECT *
-				FROM shoppingCart AS s
-				INNER JOIN menu AS m
-				ON s.menuId = m.id
-				WHERE s.memberId = 1
-	
-SELECT * 
-				FROM menu AS m
-				INNER JOIN shoppingCart AS s
-				ON s.menuId = m.id
-				WHERE restaurantId = 1
-				
-UPDATE menu
-				SET quantity = 1
-				WHERE id = 1
-	
+ 
 INSERT INTO restaurant
 (
     regDate, updateDate, cgId, `name`, memberId
@@ -213,16 +189,18 @@ SELECT FLOOR(RAND() * 100) + 1
     FROM menu;
     
     
-select * from shoppingCart
+SELECT * FROM restaurant;
+SELECT * FROM `member`;
+SELECT * FROM category;
+SELECT * FROM menu;
+SELECT * FROM shoppingCart;
+SELECT * FROM reply;
+SELECT * FROM likePoint;
+SELECT * FROM `order`;
+SELECT * FROM orderMenu;
 
-SELECT *
-				FROM shoppingCart AS s
+SELECT * 
+				FROM orderMenu AS o
 				INNER JOIN menu AS m
-				ON s.menuId = m.id
-				WHERE s.memberId = 1
-				
-SELECT SUM(price * quantity) AS totalPrice
-				FROM shoppingCart AS s
-				INNER JOIN menu AS m
-				ON s.menuId = m.id
-				WHERE s.memberId = 1
+				ON o.menuId = m.id
+				WHERE orderId = 1
