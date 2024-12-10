@@ -83,6 +83,16 @@ public class UsrMemberController {
 		return Util.jsReturn(String.format("%s님 환영합니다~", member.getName()), "/");
 	}
 
+	@GetMapping("/usr/member/accessIdNumChk")
+	@ResponseBody
+	public ResultData accessIdNumChk(HttpServletRequest req) {
+		Rq rq = (Rq) req.getAttribute("rq");
+
+		int accessIdChk = memberService.getAccessIdChk(rq.getLoginedMemberId());
+
+		return ResultData.from("S-1", "로그인 권한 확인", accessIdChk);
+	}
+
 	@GetMapping("/usr/member/myPage")
 	public String myPage(HttpServletRequest req, Model model) {
 		Rq rq = (Rq) req.getAttribute("rq");
@@ -176,7 +186,6 @@ public class UsrMemberController {
 		return ResultData.from("S-1", "회원님의 이메일주소로 임시 패스워드가 발송되었습니다");
 	}
 
-	
 	@GetMapping("/usr/member/doLogout")
 	@ResponseBody
 	public String doLogout(HttpServletRequest req) {

@@ -6,6 +6,32 @@
 
 <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
 
+<script>
+	$(function() {
+		let socket = new SockJS('/ws-stomp');
+		let stompClient = Stomp.over(socket);
+		
+		stompClient.connect({}, function () {
+			
+			stompClient.subscribe('/sub/message', function (message) {
+				let notificationDiv = $('#notifications');
+				alert('주문이 확인되었습니다.');
+				location.reload();
+			})
+		})
+		
+		$('#confirmBtn').click(function () {
+			let sender = $('#sender').val();
+			let content = $('#message').val();
+			
+			stompClient.send('/pub/messages', {}, JSON.stringify({
+				sender: sender,
+				content: content
+			}))
+		})
+	})
+</script>
+
 <section class="mt-8 flex-1 px-4">
 	<div class="container mx-auto border-b-2  w-9/12 border-slate-200">
 	    <div class="bg-blue-100 p-4 rounded-lg shadow-lg text-center mb-6">
@@ -37,17 +63,29 @@
 		    </div>
 	    </div>
 	    <div class="mt-8 text-center">
-		    <form action="/usr/order/doOrderCancel" method="post">
+		    <form action="/usr/order/doOrderCancel">
 		        <div class="mt-8 flex justify-center">
 		            <div class="relative group flex items-center space-x-4">
-		                <button type="submit" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"  onclick="return confirm('주문 접수 대기중 상태에서만 취소가 가능합니다. 주문을 취소하시겠습니까?');">
-		                    주문 취소
-		                </button>
-		
-		                <div class="absolute left-full ml-4 py-1 px-3 bg-white text-sm text-gray-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-		                    <i class="fa-solid fa-circle-info text-blue-500 mr-2"></i>
-		                    <span>주문 접수 대기중 상태에서만 취소가 가능합니다.</span>
-		                </div>
+		            	<c:if test="${order.getOrderStatus() == '대기 중'}">
+			                <button type="submit" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"  onclick="return confirm('주문 접수 대기중 상태에서만 취소가 가능합니다. 주문을 취소하시겠습니까?');">
+			                    주문 취소
+			                </button>
+			
+			                <div class="absolute left-full ml-4 py-1 px-3 bg-white text-sm text-gray-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+			                    <i class="fa-solid fa-circle-info text-blue-500 mr-2"></i>
+			                    <span>주문 접수 대기중 상태에서만 취소가 가능합니다.</span>
+			                </div>
+					    </c:if>
+				    	<c:if test="${order.getOrderStatus() == '요리 중'}">
+						    <div class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors" 	>
+			                    주문 진행중
+			                </div>
+			
+			                <div class="absolute left-full ml-4 py-1 px-3 bg-white text-sm text-gray-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+			                    <i class="fa-solid fa-circle-info text-blue-500 mr-2"></i>
+			                    <span>주문 접수 대기중 상태에서만 취소가 가능합니다.</span>
+			                </div>
+					    </c:if>
 		            </div>
 		        </div>
 		    </form>

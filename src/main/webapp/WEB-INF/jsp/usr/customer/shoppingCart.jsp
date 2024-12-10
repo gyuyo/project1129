@@ -22,7 +22,7 @@
 	    if (newQuantity <= 0) {
 	        var isConfirmed = confirm("메뉴를 취소하시겠습니까?");
 	        if (isConfirmed) {
-	            window.location.href = "/usr/member/menuDelete?menuId=" + menuId;
+	            window.location.href = "/usr/customer/menuDelete?menuId=" + menuId;
 	        } else {
 	            return; 
 	        }
@@ -69,6 +69,21 @@
 	const cancelBtn = function() {
 	    $("#orderModal").addClass("hidden");
 	}
+	
+	$(function() {
+		let socket = new SockJS('/ws-stomp');
+		let stompClient = Stomp.over(socket);
+		
+		$('#confirmBtn').click(function () {
+			let sender = $('#sender').val();
+			let content = $('#message').val();
+			
+			stompClient.send('/pub/messages', {}, JSON.stringify({
+				sender: sender,
+				content: content
+			}))
+		})
+	})
 	
 </script>
 
@@ -117,6 +132,7 @@
 				        <form action="/usr/order/doOrder" method="post">
 					        <div class="overflow-y-auto max-h-[50vh]">
 					            <c:forEach var="menu" items="${menus}">
+					            	<c:set var="addCartBtn" value="0" />
 					                <div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${menu.getMenuId()}">
 					                    <img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
 					                    <div class="flex-1">
@@ -137,6 +153,11 @@
 					            <p class="text-lg font-semibold text-[#4B4F54]">합계 금액</p>
 					            <p id="modalTotalPrice" class="text-lg font-semibold text-[#4B4F54]"></p>
 					        </div>
+					        <div>
+								<input class="input input-bordered" id="sender" type="hidden" value="${ownerId }">
+								<input class="input input-bordered" id="message" type="hidden" value="주문이 접수되었습니다.">
+							</div>
+					        
 					        <div class="flex justify-between mt-6">
 					            <button id="confirmBtn" class="bg-green-500 text-white px-4 py-2 rounded-md">주문하기</button>
 					            <button type="button" onclick="cancelBtn();" class="bg-red-500 text-white px-4 py-2 rounded-md">취소</button>

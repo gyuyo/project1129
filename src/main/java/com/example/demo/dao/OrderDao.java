@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.dto.Order;
 import com.example.demo.dto.OrderMenu;
@@ -31,33 +32,33 @@ public interface OrderDao {
 	@Select("""
 			SELECT *
 				FROM `order`
-				WHERE orderMemberId = #{loginedMemberId}
+				WHERE orderMemberId = #{orderId}
 			""")
-	Order getOrderStatus(int loginedMemberId);
+	Order getOrderStatus(int orderId);
 	
 	@Delete("""
 			DELETE FROM `order`
-				WHERE orderMemberId = #{loginedMemberId} 
+				WHERE orderMemberId = #{orderId} 
 			""")
-	void doOrderDelete(int loginedMemberId);
+	void doOrderDelete(int orderId);
 	
 	@Select("""
 			SELECT * 
 				FROM orderMenu AS o
 				INNER JOIN menu AS m
 				ON o.menuId = m.id
-				WHERE orderId = #{loginedMemberId}
+				WHERE orderId = #{orderId}
 			""")
-	List<OrderMenu> getOrderMenus(int loginedMemberId);
+	List<OrderMenu> getOrderMenus(int orderId);
 	
 	@Select("""
 			SELECT SUM(quantity * price) AS totalPrice
 				FROM orderMenu AS o
 				INNER JOIN menu AS m
 				ON o.menuId = m.id
-				WHERE orderId = #{loginedMemberId}
+				WHERE orderId = #{orderId}
 			""")
-	int getTotalPriceByOrderId(int loginedMemberId);
+	int getTotalPriceByOrderId(int orderId);
 	
 	@Select("""
 			SELECT *
@@ -68,41 +69,48 @@ public interface OrderDao {
 	
 	@Delete("""
 			DELETE FROM orderMenu
-				WHERE orderId = #{loginedMemberId} 
+				WHERE orderId = #{orderId} 
 			""")
-	void doOrderMenuDelete(int loginedMemberId);
+	void doOrderMenuDelete(int orderId);
 	
 	@Select("""
 			SELECT *
 				FROM `order` AS o
 				INNER JOIN restaurant AS r
 				ON o.restaurantId = r.id
-				WHERE r.memberId = #{loginedMemberId}
+				WHERE r.ownerId = #{loginedMemberId}
 			""")
 	List<Order> gerOrderByOwnerId(int loginedMemberId);
 	
 	@Select("""
-			SELECT SUM(om.quantity)
+			SELECT IFNULL(SUM(om.quantity), 0)
 				FROM `order` AS o
 				INNER JOIN restaurant AS r
 				ON o.restaurantId = r.id
 				INNER JOIN orderMenu AS om
-				ON o.id = om.orderId
-				WHERE r.memberId = #{loginedMemberId}
+				ON o.orderMemberId = om.orderId
+				WHERE r.ownerId = #{loginedMemberId}
 			""")
 	int getOrderMenuCnt(int loginedMemberId);
 	
 	@Select("""
-			SELECT SUM(quantity * price)
+			SELECT IFNULL(SUM(quantity * price), 0)
 				FROM `order` AS o
 				INNER JOIN restaurant AS r
 				ON o.restaurantId = r.id
 				INNER JOIN orderMenu AS om
-				ON o.id = om.orderId
+				ON o.orderMemberId = om.orderId
 				INNER JOIN menu AS m
 				ON om.menuId = m.id
-				WHERE r.memberId = #{loginedMemberId}
+				WHERE r.ownerId = #{loginedMemberId}
 			""")
 	int getOrderTotalPrice(int loginedMemberId);
+	
+	@Update("""
+			UPDATE `order`
+				SET orderStatus = #{orderStatus}
+				WHERE orderMemberId = #{orderId}
+			""")
+	void doOrderAccept(int orderId, String orderStatus);
 	
 }

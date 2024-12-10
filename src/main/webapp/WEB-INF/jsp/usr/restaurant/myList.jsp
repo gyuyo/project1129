@@ -30,7 +30,7 @@
 					<c:forEach var="restaurant" items="${restaurants }">
 						<tr>
 							<td>${restaurant.getId() }</td>
-							<td class="hover:underline"><a href="detail?id=${restaurant.getId() }">${restaurant.getName() }</a></td>
+							<td class="hover:underline"><a href="myDetail?id=${restaurant.getId() }">${restaurant.getName() }</a></td>
 							<td>2000원</td>
 							<td>40분</td>
 							<td>${restaurant.getLike() }</td>

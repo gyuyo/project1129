@@ -89,11 +89,19 @@ public class UsrRestaurantController {
 	public String manageShop(HttpServletRequest req, Model model) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
-		List<Restaurant> restaurants = restaurantService.getRestaurantByOwnerId(rq.getLoginedMemberId());
+		Restaurant restaurant = restaurantService.getRestaurantByOwnerId(rq.getLoginedMemberId());
+		List<Menu> menus = restaurantService.getMenusByRestauranId(restaurant.getId());
+		List<Reply> replies = replyService.getRepliesByRestauranId(restaurant.getId());
+		List<ShoppingCart> shoppingCarts = customerService.getSctByLoginedMemberId(rq.getLoginedMemberId());
 		
-		model.addAttribute("restaurants", restaurants);
+		Collections.reverse(replies);
 		
-		return "usr/restaurant/myList";
+		model.addAttribute("menus", menus);
+		model.addAttribute("restaurant", restaurant);
+		model.addAttribute("replies", replies);
+		model.addAttribute("shoppingCarts", shoppingCarts);
+		
+		return "usr/restaurant/manageShop";
 	}
 	
 }

@@ -36,7 +36,7 @@ public interface CustomerDao {
 				ON s.menuId = m.id
 				WHERE s.memberId = #{loginedMemberId}
 			""")
-	List<Menu> getMenuByLoignedMemberId(int loginedMemberId);
+	List<Menu> getMenuByLoginedMemberId(int loginedMemberId);
 	
 	@Select("""
 			SELECT quantity
@@ -44,6 +44,18 @@ public interface CustomerDao {
 				WHERE menuId = #{menuId}
 			""")
 	int getQuantityByMenuId(int menuId);
+	
+	@Select("""
+			SELECT ownerID
+			FROM restaurant AS r
+			INNER JOIN menu AS m
+			ON r.id = m.restaurantId
+			INNER JOIN shoppingCart AS s
+			ON m.id = s.menuId
+			WHERE s.memberId = #{loginedMemberId}
+			LIMIT 1
+			""")
+	int getOwnerIdByLoginedMemberId(int loginedMemberId);
 	
 	@Delete("""
 			DELETE FROM shoppingCart

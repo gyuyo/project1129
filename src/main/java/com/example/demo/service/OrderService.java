@@ -25,24 +25,24 @@ public class OrderService {
 		orderDao.doOrder(orderMemberId, restaurantId);
 	}
 
-	public Order getOrderStatus(int loginedMemberId) {
-		return orderDao.getOrderStatus(loginedMemberId);
+	public Order getOrderStatus(int orderId) {
+		return orderDao.getOrderStatus(orderId);
 	}
 
-	public void doOrderDelete(int loginedMemberId) {
-		orderDao.doOrderDelete(loginedMemberId);
+	public void doOrderDelete(int orderId) {
+		orderDao.doOrderDelete(orderId);
 	}
 
-	public void doOrderMenuDelete(int loginedMemberId) {
-		orderDao.doOrderMenuDelete(loginedMemberId);
+	public void doOrderMenuDelete(int orderId) {
+		orderDao.doOrderMenuDelete(orderId);
 	}
 	
-	public List<OrderMenu> getOrderMenus(int loginedMemberId) {
-		return orderDao.getOrderMenus(loginedMemberId);
+	public List<OrderMenu> getOrderMenus(int orderId) {
+		return orderDao.getOrderMenus(orderId);
 	}
 
-	public int getTotalPriceByOrderId(int loginedMemberId) {
-		return orderDao.getTotalPriceByOrderId(loginedMemberId);
+	public int getTotalPriceByOrderId(int orderId) {
+		return orderDao.getTotalPriceByOrderId(orderId);
 	}
 
 	public Order getOrderByLoginedMemberId(int loginedMemberId) {
@@ -59,5 +59,9 @@ public class OrderService {
 
 	public int getOrderTotalPrice(int loginedMemberId) {
 		return orderDao.getOrderTotalPrice(loginedMemberId);
+	}
+
+	public void doOrderAccept(int orderId, String orderStatus) {
+		orderDao.doOrderAccept(orderId, orderStatus);
 	}
 }

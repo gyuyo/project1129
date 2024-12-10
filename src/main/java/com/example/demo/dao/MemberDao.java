@@ -77,6 +77,6 @@ public interface MemberDao {
 				FROM `member`
 				WHERE id = #{loginedMemberId}
 			""")
-	int getaccessIdChk(int loginedMemberId);
+	int getAccessIdChk(int loginedMemberId);
 	
 }

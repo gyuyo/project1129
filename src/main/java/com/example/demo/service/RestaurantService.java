@@ -38,7 +38,7 @@ public class RestaurantService {
 		return restaurantDao.getMenusByRestauranId(getMenusByRestauranId);
 	}
 
-	public List<Restaurant> getRestaurantByOwnerId(int loginedMemberId) {
+	public Restaurant getRestaurantByOwnerId(int loginedMemberId) {
 		return restaurantDao.getRestaurantByOwnerId(loginedMemberId);
 	}
 

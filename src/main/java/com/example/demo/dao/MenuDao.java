@@ -31,5 +31,15 @@ public interface MenuDao {
 				WHERE s.memberId = #{loginedMemberId}
 			""")
 	Menu getTotalPriceByLoginedId(int loginedMemberId);
+	
+	@Update("""
+			UPDATE menu
+				SET `name` = #{menuName}
+					, `description` = #{menuDescription}
+					, price = #{menuPrice}
+					, readyTime = #{readyTime}
+					WHERE id = #{menuId}  
+			""")
+	void doModifyMenu(int menuId, String menuName, String menuDescription, int menuPrice, int readyTime);
 
 }

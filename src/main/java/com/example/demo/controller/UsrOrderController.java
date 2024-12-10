@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class UsrOrderController {
+	
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 	
 	private OrderService orderService;
 	private CustomerService customerService;
@@ -52,16 +57,15 @@ public class UsrOrderController {
 		return Util.jsReturn("주문이 접수되었습니다", String.format("/usr/order/orderPage?loginId=%d", rq.getLoginedMemberId()));
 	}
 	
-	@PostMapping("/usr/order/doOrderCancel")
+	@GetMapping("/usr/order/doOrderAccept")
 	@ResponseBody
-	public String doOrderCancel(HttpServletRequest req) {
-		Rq rq = (Rq) req.getAttribute("rq");
+	public String doOrderAccept(int orderId) {
 		
-		orderService.doOrderMenuDelete(rq.getLoginedMemberId());
-		orderService.doOrderDelete(rq.getLoginedMemberId());
+		orderService.doOrderAccept(orderId, "요리 중");
 		
-		return Util.jsReturn("주문이 취소되었습니다.", "/usr/home/main");
+		return Util.jsReturn("주문이 확인되었습니다.", String.format("/usr/order/orderDetail?orderId=%d",orderId));
 	}
+	
 	
 	@GetMapping("/usr/order/orderPage")
 	public String orderPage(Model model, HttpServletRequest req, int loginId) {
@@ -103,16 +107,43 @@ public class UsrOrderController {
 	}
 	
 	@GetMapping("/usr/order/orderDetail")
-	public String orderDetail(HttpServletRequest req, Model model, int loginId) {
+	public String orderDetail(HttpServletRequest req, Model model, int orderId) {
+		Order order = orderService.getOrderStatus(orderId);
+		int totalPrice = orderService.getTotalPriceByOrderId(orderId);
+		List<OrderMenu> orderMenus = orderService.getOrderMenus(orderId);
 		
-		Order order = orderService.getOrderStatus(loginId);
-		int totalPrice = orderService.getTotalPriceByOrderId(loginId);
-		List<OrderMenu> orderMenus = orderService.getOrderMenus(loginId);
 		
 		model.addAttribute("order", order);
 		model.addAttribute("totalPrice", totalPrice);
 		model.addAttribute("orderMenus", orderMenus);
 		
 		return "usr/order/orderDetail";
+	}
+	
+	@GetMapping("/usr/order/riderCall")
+	@ResponseBody
+	public ResultData riderCall(HttpServletRequest req, Model model) {
+
+		return ResultData.from("S-1", "라이더를 호출합니다.", "픽업 대기중");
+	}
+	
+	@GetMapping("/usr/order/doRiderCall")
+	@ResponseBody
+	public String doRiderCall(HttpServletRequest req, Model model, int orderId) {
+		
+		orderService.doOrderAccept(orderId, "배달 중");
+		
+		return Util.jsReturn("음식이 배달 중입니다.", String.format("/usr/order/orderDetail?orderId=",orderId));
+	}
+
+	@GetMapping("/usr/order/doOrderCancel")
+	@ResponseBody
+	public String doOrderCancel(HttpServletRequest req) {
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		orderService.doOrderMenuDelete(rq.getLoginedMemberId());
+		orderService.doOrderDelete(rq.getLoginedMemberId());
+		
+		return Util.jsReturn("주문이 취소되었습니다.", "/usr/home/main");
 	}
 }

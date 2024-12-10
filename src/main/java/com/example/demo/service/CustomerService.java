@@ -24,8 +24,8 @@ public class CustomerService {
 		customerDao.addCart(loginedMemberId, menuId);
 	}
 
-	public List<Menu> getMenuByLoignedMemberId(int loginedMemberId) {
-		return customerDao.getMenuByLoignedMemberId(loginedMemberId);
+	public List<Menu> getMenuByLoginedMemberId(int loginedMemberId) {
+		return customerDao.getMenuByLoginedMemberId(loginedMemberId);
 	}
 
 	public int getQuantityByMenuId(int menuId) {
@@ -34,5 +34,9 @@ public class CustomerService {
 	
 	public void doMenuDelete(int memberId, int menuId) {
 		customerDao.doMenuDelete(memberId, menuId);
+	}
+
+	public int getOwnerIdByLoginedMemberId(int loginedMemberId) {
+		return customerDao.getOwnerIdByLoginedMemberId(loginedMemberId);
 	}
 }

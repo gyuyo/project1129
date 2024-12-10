@@ -77,8 +77,8 @@ public class MemberService {
 		return memberDao.getMembersById(id);
 	}
 
-	public int getaccessIdChk(int loginedMemberId) {
-		return memberDao.getaccessIdChk(loginedMemberId);
+	public int getAccessIdChk(int loginedMemberId) {
+		return memberDao.getAccessIdChk(loginedMemberId);
 	}
 
 }

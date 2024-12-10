@@ -26,4 +26,8 @@ public class MenuService {
 		return menuDao.getTotalPriceByLoginedId(loginedMemberId);
 	}
 
+	public void doModifyMenu(int menuId, String menuName, String menuDescription, int menuPrice, int readyTime) {
+		menuDao.doModifyMenu(menuId, menuName, menuDescription, menuPrice, readyTime);
+	}
+
 }

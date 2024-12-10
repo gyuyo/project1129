@@ -19,7 +19,7 @@ public interface RestaurantDao {
 					, IFNULL(SUM(l.point), 0) AS `like`
 				FROM Restaurant AS r
 				INNER JOIN `member` AS m
-				ON r.memberId = m.id
+				ON r.ownerId = m.id
 				LEFT JOIN likePoint AS l
 				ON l.restaurantId = r.id
 				WHERE cgId = #{cgId}
@@ -78,7 +78,7 @@ public interface RestaurantDao {
 	@Select("""
 			SELECT *
 				FROM restaurant
-				WHERE memberId = #{loginedMemberId}
+				WHERE ownerId = #{loginedMemberId}
 			""")
-	List<Restaurant> getRestaurantByOwnerId(int loginedMemberId);
+	Restaurant getRestaurantByOwnerId(int loginedMemberId);
 }
