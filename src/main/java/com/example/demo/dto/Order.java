@@ -11,5 +11,7 @@ public class Order {
 	private int id;
 	private int orderMemberId;
 	private int restaurantId;
+	private int quantity;
+	private int totalPrice;
 	private String orderStatus;
 }

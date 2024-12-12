@@ -53,14 +53,6 @@ public class OrderService {
 		return orderDao.gerOrderByOwnerId(loginedMemberId);
 	}
 
-	public int getOrderMenuCnt(int loginedMemberId) {
-		return orderDao.getOrderMenuCnt(loginedMemberId);
-	}
-
-	public int getOrderTotalPrice(int loginedMemberId) {
-		return orderDao.getOrderTotalPrice(loginedMemberId);
-	}
-
 	public void doOrderAccept(int orderId, String orderStatus) {
 		orderDao.doOrderAccept(orderId, orderStatus);
 	}

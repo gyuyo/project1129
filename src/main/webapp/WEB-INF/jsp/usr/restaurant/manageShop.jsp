@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<c:set var="pageTitle" value="${restaurant.getName() }" />
+<c:set var="pageTitle" value="내 가게보기" />
 
 <%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 

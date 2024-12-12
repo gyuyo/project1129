@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class UsrOrderController {
-	
-	@Autowired
-	private SimpMessagingTemplate messagingTemplate;
 	
 	private OrderService orderService;
 	private CustomerService customerService;
@@ -54,6 +49,10 @@ public class UsrOrderController {
 		
 		orderService.doOrder(rq.getLoginedMemberId(),rtId[0]);
 		
+		Order order = orderService.getOrderByLoginedMemberId(rq.getLoginedMemberId());
+		
+		System.out.println(order.toString());
+		
 		return Util.jsReturn("주문이 접수되었습니다", String.format("/usr/order/orderPage?loginId=%d", rq.getLoginedMemberId()));
 	}
 	
@@ -65,7 +64,6 @@ public class UsrOrderController {
 		
 		return Util.jsReturn("주문이 확인되었습니다.", String.format("/usr/order/orderDetail?orderId=%d",orderId));
 	}
-	
 	
 	@GetMapping("/usr/order/orderPage")
 	public String orderPage(Model model, HttpServletRequest req, int loginId) {
@@ -81,9 +79,19 @@ public class UsrOrderController {
 		return "usr/order/orderPage";
 	}
 	
+	@GetMapping("/usr/order/updateOrder")
+	@ResponseBody
+	public ResultData<Order> updateOrder(HttpServletRequest req) {
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		Order order = orderService.getOrderStatus(rq.getLoginedMemberId());
+		
+		return ResultData.from("S-1", "오더 상태 확인", order);
+	}
+	
 	@GetMapping("/usr/order/addOrderInfo")
 	@ResponseBody
-	public ResultData addOrderInfo(Model model, HttpServletRequest req) {
+	public ResultData<Order> addOrderInfo(Model model, HttpServletRequest req) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
 		Order order = orderService.getOrderByLoginedMemberId(rq.getLoginedMemberId());
@@ -92,18 +100,18 @@ public class UsrOrderController {
 	}
 	
 	@GetMapping("/usr/order/orderList")
-	public String orderChk(HttpServletRequest req, Model model) {
+	public String orderList() {
+		return "usr/order/orderList";
+	}
+	
+	@GetMapping("/usr/order/getOrderList")
+	@ResponseBody
+	public ResultData<List<Order>> getOrderList(HttpServletRequest req, Model model) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
 		List<Order> orders = orderService.gerOrderByOwnerId(rq.getLoginedMemberId());
-		int orderMenuCnt = orderService.getOrderMenuCnt(rq.getLoginedMemberId());
-		int orderTotalPrice = orderService.getOrderTotalPrice(rq.getLoginedMemberId());
 		
-		model.addAttribute("orders", orders);
-		model.addAttribute("orderMenuCnt", orderMenuCnt);
-		model.addAttribute("orderTotalPrice", orderTotalPrice);
-		
-		return "usr/order/orderList";
+		return ResultData.from("S-1", "오더 상태 확인", orders);
 	}
 	
 	@GetMapping("/usr/order/orderDetail")
@@ -122,9 +130,9 @@ public class UsrOrderController {
 	
 	@GetMapping("/usr/order/riderCall")
 	@ResponseBody
-	public ResultData riderCall(HttpServletRequest req, Model model) {
+	public ResultData<String> riderCall(HttpServletRequest req, Model model) {
 
-		return ResultData.from("S-1", "라이더를 호출합니다.", "픽업 대기중");
+	return ResultData.from("S-1", "라이더를 호출합니다.", "픽업 대기중");
 	}
 	
 	@GetMapping("/usr/order/doRiderCall")
@@ -133,16 +141,15 @@ public class UsrOrderController {
 		
 		orderService.doOrderAccept(orderId, "배달 중");
 		
-		return Util.jsReturn("음식이 배달 중입니다.", String.format("/usr/order/orderDetail?orderId=",orderId));
+		return Util.jsReturn("음식이 배달 중입니다.", String.format("/usr/order/orderDetail?orderId=%d",orderId));
 	}
 
 	@GetMapping("/usr/order/doOrderCancel")
 	@ResponseBody
-	public String doOrderCancel(HttpServletRequest req) {
-		Rq rq = (Rq) req.getAttribute("rq");
+	public String doOrderCancel(int orderId) {
 		
-		orderService.doOrderMenuDelete(rq.getLoginedMemberId());
-		orderService.doOrderDelete(rq.getLoginedMemberId());
+		orderService.doOrderMenuDelete(orderId);
+		orderService.doOrderDelete(orderId);
 		
 		return Util.jsReturn("주문이 취소되었습니다.", "/usr/home/main");
 	}

@@ -10,8 +10,32 @@
 	
 	$(document).ready(function() {
 	    updateTotalPrice();
+	    
+		$('#confirmBtn').click(function () {
+			
+			let sender = $('#sender').val();
+			let content = $('#message').val();
+			let restaurantId = $('#restaurantId').val();
+			let menus = $('#menus').val();
+			
+			$.ajax({
+	            url: '/usr/order/doOrder', 
+	            type: 'POST', 
+	            data: {
+	            	restaurantId: restaurantId,
+	            	menus: menus
+		        },
+		        
+		        success : function(data) {
+					location.replace = "/usr/order/orderPage?loginId=" + ${rq.getLoginedMemberId() };
+		        }
+			})
+             stompClient.send('/pub/messages', {}, JSON.stringify({
+                 sender: sender,
+                 content: content
+             }));
+		})
 	});
-	
 	async function changeQuantity(menuId, delta, unitPrice) {
 	    var $quantityElement = $("#quantity-" + menuId);
 	    var $priceElement = $("#price-" + menuId);
@@ -54,6 +78,7 @@
 	        type: 'GET',  
 	        dataType: 'json',  
 	        success: function(data) {
+					        	
 	        	$('#totalPrice').text('₩' + data.data.totalPrice + '원');
 	        	$('#modalTotalPrice').text('₩' + data.data.totalPrice + '원');
 	        },
@@ -69,21 +94,6 @@
 	const cancelBtn = function() {
 	    $("#orderModal").addClass("hidden");
 	}
-	
-	$(function() {
-		let socket = new SockJS('/ws-stomp');
-		let stompClient = Stomp.over(socket);
-		
-		$('#confirmBtn').click(function () {
-			let sender = $('#sender').val();
-			let content = $('#message').val();
-			
-			stompClient.send('/pub/messages', {}, JSON.stringify({
-				sender: sender,
-				content: content
-			}))
-		})
-	})
 	
 </script>
 
@@ -128,41 +138,38 @@
 				        <div class="sticky top-0 bg-white p-2 shadow-lg">
 				            <h2 class="text-center text-2xl font-bold mb-4">주문 내역</h2>
 				        </div>
-				
-				        <form action="/usr/order/doOrder" method="post">
-					        <div class="overflow-y-auto max-h-[50vh]">
-					            <c:forEach var="menu" items="${menus}">
-					            	<c:set var="addCartBtn" value="0" />
-					                <div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${menu.getMenuId()}">
-					                    <img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
-					                    <div class="flex-1">
-					                        <h2 class="text-xl font-semibold text-[#4B4F54]">${menu.getName()}</h2>
-					                        <p class="text-gray-500 mb-2">${menu.getDescription()}.</p>
-					                        <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${menu.getMenuId()}">${menu.getPrice() * menu.getQuantity()}</span>원</p>
-					                    </div>
-					                    <div class="flex flex-col items-center">
-					                        <p class="text-lg font-semibold mb-2">수량: <span id="quantity-${menu.getMenuId()}">${menu.getQuantity()}</span></p>
-					                    </div>
-					                    <input type="hidden" name="restaurantId" value="${menu.getRestaurantId() }">
-					                    <input type="hidden" name="menus" value="${menu.getMenuId()}">
-					                </div>
-					            </c:forEach>
-					        </div>
-				
-					        <div class="w-9/12 mx-auto mt-6 flex justify-between items-center">
-					            <p class="text-lg font-semibold text-[#4B4F54]">합계 금액</p>
-					            <p id="modalTotalPrice" class="text-lg font-semibold text-[#4B4F54]"></p>
-					        </div>
-					        <div>
-								<input class="input input-bordered" id="sender" type="hidden" value="${ownerId }">
-								<input class="input input-bordered" id="message" type="hidden" value="주문이 접수되었습니다.">
-							</div>
-					        
-					        <div class="flex justify-between mt-6">
-					            <button id="confirmBtn" class="bg-green-500 text-white px-4 py-2 rounded-md">주문하기</button>
-					            <button type="button" onclick="cancelBtn();" class="bg-red-500 text-white px-4 py-2 rounded-md">취소</button>
-					        </div>
-				        </form>
+				        <div class="overflow-y-auto max-h-[50vh]">
+				            <c:forEach var="menu" items="${menus}">
+				            	<c:set var="addCartBtn" value="0" />
+				                <div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${menu.getMenuId()}">
+				                    <img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
+				                    <div class="flex-1">
+				                        <h2 class="text-xl font-semibold text-[#4B4F54]">${menu.getName()}</h2>
+				                        <p class="text-gray-500 mb-2">${menu.getDescription()}.</p>
+				                        <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${menu.getMenuId()}">${menu.getPrice() * menu.getQuantity()}</span>원</p>
+				                    </div>
+				                    <div class="flex flex-col items-center">
+				                        <p class="text-lg font-semibold mb-2">수량: <span id="quantity-${menu.getMenuId()}">${menu.getQuantity()}</span></p>
+				                    </div>
+				                    <input type="hidden" name="restaurantId" id="restaurantId" value="${menu.getRestaurantId() }">
+				                    <input type="hidden" name="menus" id="menus" value="${menu.getMenuId()}">
+				                </div>
+				            </c:forEach>
+				        </div>
+			
+				        <div class="w-9/12 mx-auto mt-6 flex justify-between items-center">
+				            <p class="text-lg font-semibold text-[#4B4F54]">합계 금액</p>
+				            <p id="modalTotalPrice" class="text-lg font-semibold text-[#4B4F54]"></p>
+				        </div>
+				        <div>
+							<input class="input input-bordered" id="sender" type="hidden" value="${ownerId }">
+							<input class="input input-bordered" id="message" type="hidden" value="주문이 접수되었습니다.">
+						</div>
+				        
+				        <div class="flex justify-between mt-6">
+				            <button id="confirmBtn" class="bg-green-500 text-white px-4 py-2 rounded-md">주문하기</button>
+				            <button type="button" onclick="cancelBtn();" class="bg-red-500 text-white px-4 py-2 rounded-md">취소</button>
+				        </div>
 				    </div>
 				</div>
 			</div>

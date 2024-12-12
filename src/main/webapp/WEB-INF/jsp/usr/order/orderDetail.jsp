@@ -2,68 +2,77 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<c:set var="pageTitle" value="로그인" />
+<c:set var="pageTitle" value="주문상세보기" />
 
 <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
 
 <script>
 
 	$(document).ready(function() {
-	    var orderText = localStorage.getItem("orderStatText");
-	    var storedText = localStorage.getItem("riderButtonText");
-	    
-	    if (storedText) {
-	        $('#orderStat').text(orderText);
-	        $('#rider-call-btn').text(storedText);
-	    }
-	});
-	const doRiderCall = function(orderId) {
-	    
-	    var buttonText = localStorage.getItem("riderButtonText");
 		
-	    if (buttonText === "배달 출발") {
-	        alert("배달이 시작되었습니다.");
-	        localStorage.setItem("orderStatText", '배달 진행중');
-	        window.location.href = '/usr/order/doRiderCall?orderId=' + orderId;
-	    } else {
-		    localStorage.setItem("orderStatText", "요리 중");
-		    localStorage.setItem("riderButtonText", "라이더 호출");
-	    	$.ajax({
-		        url: '/usr/order/riderCall',
-		        type: 'GET',
-		        data: {
-		            orderId: orderId
-		        },
-		        dataType: 'json',
-		        success: function(data) {
-		            if (data.success) {
-		                if (data.data != null) {
-		                    alert(data.resultMsg);
-		                    $('#orderStat').text('픽업 대기중');
-		                    localStorage.setItem("orderStatText", '픽업 대기중');
-		                    $('#rider-call-btn').text('배달 출발');
-		                    localStorage.setItem("riderButtonText", '배달 출발');
-		                }
-		            }
-		        }
-		    });
-		}
-	}
-	    
-	$(function() {
-		let socket = new SockJS('/ws-stomp');
+	    let socket = new SockJS('/ws-stomp');
 		let stompClient = Stomp.over(socket);
 		
-		$('#confirmBtn').click(function () {
-			let sender = $('#sender').val();
-			let content = $('#message').val();
-			
-			stompClient.send('/pub/messages', {}, JSON.stringify({
-				sender: sender,
-				content: content
-			}))
+		stompClient.connect({}, function () {
+			stompClient.subscribe('/sub/message', function (message) {
+				
+			})
 		})
-	}) 
+		
+		$('#acceptBtn').click(function(){
+		    let sender = $('#sender').val();
+		    let content = $('#message').val();
+		    console.log(sender);
+		    
+		    stompClient.send('/pub/messages', {}, JSON.stringify({
+		        sender: sender,
+		        content: content
+		    }));
+		    
+		    window.location.href = '/usr/order/doOrderAccept?orderId=' + sender;
+		})
+	});
+// 	    var orderText = localStorage.getItem("orderStatText");
+// 	    var storedText = localStorage.getItem("riderButtonText");
+	    
+// 	    if (storedText) {
+// 	        $('#orderStat').text(orderText);
+// 	        $('#rider-call-btn').text(storedText);
+// 	    }
+	    
+	
+// 	const doRiderCall = function(orderId) {
+	    
+// 	    var buttonText = localStorage.getItem("riderButtonText");
+		
+// 	    if (buttonText === "배달 출발") {
+// 	        alert("배달이 시작되었습니다.");
+// 	        localStorage.setItem("orderStatText", '배달 중');
+// 	        window.location.href = '/usr/order/doRiderCall?orderId=' + orderId;
+// 	    } else {
+// 		    localStorage.setItem("orderStatText", "요리 중");
+// 		    localStorage.setItem("riderButtonText", "라이더 호출");
+// 	    	$.ajax({
+// 		        url: '/usr/order/riderCall',
+// 		        type: 'GET',
+// 		        data: {
+// 		            orderId: orderId
+// 		        },
+// 		        dataType: 'json',
+// 		        success: function(data) {
+// 		            if (data.success) {
+// 		                if (data.data != null) {
+// 		                    alert(data.resultMsg);
+// 		                    $('#orderStat').text('픽업 대기중');
+// 		                    localStorage.setItem("orderStatText", '픽업 대기중');
+// 		                    $('#rider-call-btn').text('배달 출발');
+// 		                    localStorage.setItem("riderButtonText", '배달 출발');
+// 		                }
+// 		            }
+// 		        }
+// 		    });
+// 		}
+// 	}
 </script>
 <section class="mt-8 flex-1 px-4">
 	<div class="container mx-auto border-b-2  w-9/12 border-slate-200">
@@ -77,7 +86,7 @@
 	        <div class="space-y-4">
 	        	<c:forEach var="orderMenu" items="${orderMenus }">
 					<div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${orderMenu.getMenuId()}">
-						<img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
+						<img src="" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
 					    	<div class="flex-1">
 					        	<p class="text-xl font-semibold text-[#4B4F54]">${orderMenu.getName()}</p>
 					            <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${orderMenu.getMenuId()}">${orderMenu.getPrice() * orderMenu.getQuantity()}</span>원</p>
@@ -96,57 +105,17 @@
 		    </div>
 	    </div>
 	    <div class="mt-8 text-center">
-	    	<c:if test="${order.getOrderStatus() == '대기 중'}">
-	    		<input class="input input-bordered" id="sender" type="hidden" value="${order.getOrderMemberId()}">
-				<input class="input input-bordered" id="message" type="hidden" value="주문이 확인되었습니다.">
-			    <a onclick="acceptBtn();" href="/usr/order/doOrderAccept?orderId=${order.getOrderMemberId()}" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
-			        주문 접수
-			    </a>
-			    <a href="/usr/order/doOrderCancel?orderId=${order.getOrderMemberId()}" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors shadow-md hover:shadow-lg text-center inline-block" onclick="return confirm('사유가 불분명한 취소는 불이익을 받을 수 있습니다. 주문을 취소하시겠습니까?');">
-			        주문 취소
-			    </a>
-		    </c:if>
-	    	<c:if test="${order.getOrderStatus() == '요리 중'}">
-			    <button onclick="doRiderCall(${order.getOrderMemberId()})" id="rider-call-btn" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
-				    라이더 호출
-				</button>
-		    </c:if>
+			<button id="acceptBtn" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
+				주문 접수
+			</button>
+			<a href="/usr/order/doOrderCancel?orderId=${order.getOrderMemberId()}" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors shadow-md hover:shadow-lg text-center inline-block" onclick="return confirm('사유가 불분명한 취소는 불이익을 받을 수 있습니다. 주문을 취소하시겠습니까?');">
+			    주문 취소
+			</a>
+	    	<input class="input input-bordered" id="sender" type="hidden" value="${order.getOrderMemberId()}">
+			<input class="input input-bordered" id="message" type="hidden" value="1">
 		    <div id="order-notifications" class="mt-6"></div>
 		</div>
     </div>
 </section>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
-
-<!-- <script type="text/javascript"> -->
-<!--     // 웹소켓 연결 설정 -->
-<!--     var socket = new SockJS('/ws');  // 서버의 웹소켓 엔드포인트 -->
-<!--     var stompClient = Stomp.over(socket); -->
-
-<!--     stompClient.connect({}, function(frame) { -->
-<!--     	 console.log('Connected: ' + frame); -->
-<!--     }, function(error) { -->
-<!--         console.log('Error connecting: ' + error); -->
-
-<!--         // /topic/orderUpdates 경로에서 메시지를 구독 -->
-<!--         stompClient.subscribe('/topic/orderUpdates', function(messageOutput) { -->
-<!--             console.log('Message from server: ' + messageOutput.body); -->
-<!--             // 알림 메시지를 화면에 표시 -->
-<!--             var notificationsDiv = document.getElementById("order-notifications"); -->
-<!--             notificationsDiv.innerHTML = "<p class='text-lg text-blue-500'>" + messageOutput.body + "</p>"; -->
-<!--         }); -->
-<!--     }); -->
-
-<!--     // 주문 접수 버튼 클릭 시 -->
-<!--     document.getElementById("accept-order-form").addEventListener("submit", function(event) { -->
-<!--         event.preventDefault(); // 기본 폼 제출을 막음 -->
-<!--         fetch("/usr/order/doOrderAccept", { -->
-<!--             method: "POST", -->
-<!--             body: JSON.stringify({ orderStatus: "접수됨" }), -->
-<!--             headers: { "Content-Type": "application/json" } -->
-<!--         }).then(response => response.json()); -->
-<!--     }); -->
-<!-- </script> -->
 
 <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>

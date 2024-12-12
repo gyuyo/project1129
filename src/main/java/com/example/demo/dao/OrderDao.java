@@ -52,11 +52,11 @@ public interface OrderDao {
 	List<OrderMenu> getOrderMenus(int orderId);
 	
 	@Select("""
-			SELECT SUM(quantity * price) AS totalPrice
+			SELECT IFNULL(SUM(quantity * price),0) AS totalPrice
 				FROM orderMenu AS o
 				INNER JOIN menu AS m
 				ON o.menuId = m.id
-				WHERE orderId = #{orderId}
+				WHERE o.orderId = #{orderId}
 			""")
 	int getTotalPriceByOrderId(int orderId);
 	
@@ -74,37 +74,18 @@ public interface OrderDao {
 	void doOrderMenuDelete(int orderId);
 	
 	@Select("""
-			SELECT *
-				FROM `order` AS o
-				INNER JOIN restaurant AS r
-				ON o.restaurantId = r.id
-				WHERE r.ownerId = #{loginedMemberId}
-			""")
-	List<Order> gerOrderByOwnerId(int loginedMemberId);
-	
-	@Select("""
-			SELECT IFNULL(SUM(om.quantity), 0)
-				FROM `order` AS o
-				INNER JOIN restaurant AS r
-				ON o.restaurantId = r.id
-				INNER JOIN orderMenu AS om
-				ON o.orderMemberId = om.orderId
-				WHERE r.ownerId = #{loginedMemberId}
-			""")
-	int getOrderMenuCnt(int loginedMemberId);
-	
-	@Select("""
-			SELECT IFNULL(SUM(quantity * price), 0)
-				FROM `order` AS o
-				INNER JOIN restaurant AS r
-				ON o.restaurantId = r.id
-				INNER JOIN orderMenu AS om
-				ON o.orderMemberId = om.orderId
+			SELECT * , SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
+				FROM orderMenu AS om
 				INNER JOIN menu AS m
 				ON om.menuId = m.id
+				INNER JOIN `order` AS o
+				ON om.orderId = o.orderMemberId
+				INNER JOIN restaurant AS r
+				ON o.restaurantId = r.id
 				WHERE r.ownerId = #{loginedMemberId}
+				GROUP BY o.orderMemberId
 			""")
-	int getOrderTotalPrice(int loginedMemberId);
+	List<Order> gerOrderByOwnerId(int loginedMemberId);
 	
 	@Update("""
 			UPDATE `order`

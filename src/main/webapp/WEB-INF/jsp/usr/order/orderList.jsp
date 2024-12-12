@@ -2,65 +2,101 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<c:set var="pageTitle" value="주문내역" />
+<c:set var="pageTitle" value="주문현황" />
 
 <%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 
 <script>
+
 	$(function() {
 		let socket = new SockJS('/ws-stomp');
 		let stompClient = Stomp.over(socket);
+		orderListReload();
 		
 		stompClient.connect({}, function () {
-			
-			stompClient.subscribe('/sub/message', function (message) {
-				let notificationDiv = $('#notifications');
-				alert('주문이 접수되었습니다.');
-				location.reload();
+			stompClient.subscribe('/sub/message', function () {
+				console.log("c");
+				orderListReload();
 			})
 		})
-		
-		$('#confirmBtn').click(function () {
-			let sender = $('#sender').val();
-			let content = $('#message').val();
-			
-			stompClient.send('/pub/messages', {}, JSON.stringify({
-				sender: sender,
-				content: content
-			}))
-		})
 	})
+	
+	const orderListReload = function() {
+	    $.ajax({
+	        url: '/usr/order/getOrderList',
+	        type: 'GET',
+	        dataType : 'json',
+			success : function(data) {
+		        console.log(data.data);
+		        
+	        	var orderListBody = $('#orderListBody');
+	            orderListBody.empty();
+	            var waitingCount = 0;
+	            
+				for (let i = 0; i < data.data.length; i++) {
+	                var order = data.data[i];
+	               	if(order.orderStatus.trim() === "대기 중") {
+		            	console.log("b");
+	               		waitingCount++;
+	               	}
+	                var orderRow = `
+	                    <tr>
+	                        <td>${i + 1}</td>
+	                        <td class="hover:underline"><a href="orderDetail?orderId=\${order.orderMemberId}">대전광역시</a></td>
+	                        <td>\${order.orderMemberId}</td>
+	                        <td>\${order.quantity}</td>
+	                        <td>\${order.totalPrice}</td>
+	                        <td>\${order.orderStatus}</td> 
+	                    </tr>
+	                `;
+	                orderListBody.append(orderRow); 
+					 };
+				$('#waitingCount').text(`\${waitingCount}`);
+				
+				if (waitingCount > 0) {
+	                $('#waitingCount').removeClass('hidden'); // 대기 중 주문이 있으면 표시
+	            } else {
+	                $('#waitingCount').addClass('hidden'); // 대기 중 주문이 없으면 숨기기
+	            }
+	            	console.log("a");
+		        },
+			error : function(xhr, status, error) {
+				console.log(error);
+			}
+	    })
+	}
+	
 </script>
 <section class="mt-8 flex-1">
 	<div class="container mx-auto">
 		<div class="table-box">
-			<div class="w-9/12 mx-auto">
-				<table class="table">
-					<colgroup>
-					<col width="60"/>
-					<col />
-					<col width="100"/>
-					<col width="120"/>
-					<col width="120"/>
-					</colgroup>
-					<tr>
-						<th>번호</th>
-						<th>주소</th>
-						<th>메뉴수</th>
-						<th>합계금액</th>
-						<th>주문상태</th>
-					</tr>
-					<c:forEach var="order" items="${orders }" varStatus="status">
-						<tr>
-							<td>${status.index + 1}</td>
-							<td class="hover:underline"><a href="orderDetail?orderId=${order.getOrderMemberId() }">대전광역시</a></td>
-							<td>${orderMenuCnt }</td>
-							<td>${orderTotalPrice }</td>
-							<td>${order.getOrderStatus() }</td>
-						</tr>
-					</c:forEach>
-				</table>
-			</div>
+		    <div class="w-9/12 mx-auto">
+		        <table class="table">
+		            <colgroup>
+		                <col width="60"/>
+		                <col />
+		                <col width="100"/>
+		                <col width="100"/>
+		                <col width="120"/>
+		                <col width="120"/>
+		            </colgroup>
+		            <tr>
+		                <th>번호</th>
+		                <th>주소</th>
+		                <th>주문자</th>
+		                <th>메뉴수</th>
+		                <th>합계금액</th>
+		                <th>주문상태</th>
+		            </tr>
+		            <tbody id="orderListBody">
+		            </tbody>
+		        </table>
+		        <div id="waitingCountContainer" class="absolute top-6 right-40 z-50">
+    <span id="waitingCount" class="hidden bg-red-500 text-white text-lg font-bold py-1.5 px-3 rounded-full min-w-[35px] h-[35px] flex items-center justify-center border-2 border-white">
+        0
+    </span>
+</div>
+		    </div>
 		</div>
 		<div class="w-9/12 mx-auto btns mt-3 text-sm flex justify-between">
 			<button onclick="history.back();">뒤로가기</button>
@@ -69,7 +105,7 @@
 	<div class="flex justify-center mt-8">
 		<div class="join">
 			
-			<c:set var="path" value="?cgId=${category.getId() }&searchType=${searchType }&searchKeyword=${searchKeyword }">
+			<c:set var="path" value="?cgId=${category.getId() }">
 			</c:set>
 			<c:if test="${from != 1 }">
 				<a href="${path}&cPage=1" class="join-item btn btn-square" type="radio">
@@ -85,16 +121,6 @@
   				<a href="${path}&cPage=${totalPagesCnt }" class="join-item btn btn-square" type="radio"><i class="fa-solid fa-angles-right"></i></a>
   			</c:if>
 		</div>
-	</div>
-	<div>
-		<label> <input class="input input-bordered" id="sender"
-			type="hidden" value="${ownerId }">
-		</label> <br /> <label> <input class="input input-bordered"
-			id="message" type="hidden" value="주문이 접수되었습니다.">
-		</label> <br />
-
-		<div>알림으로 받은 메시지 내용</div>
-		<div id="notifications"></div>
 	</div>
 </section>
 

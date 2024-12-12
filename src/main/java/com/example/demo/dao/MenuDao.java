@@ -24,7 +24,7 @@ public interface MenuDao {
 	void updateQuantity(int menuId, int quantity);
 	
 	@Select("""
-			SELECT SUM(price * quantity) AS totalPrice
+			SELECT IFNULL(SUM(price * quantity),0) AS totalPrice
 				FROM shoppingCart AS s
 				INNER JOIN menu AS m
 				ON s.menuId = m.id

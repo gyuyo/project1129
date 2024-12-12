@@ -53,6 +53,12 @@
                 <script>
                 $(document).ready(function() {
                 	orderInfo();
+                	accessIdChk();
+                	
+                	let socket = new SockJS('/ws-stomp');
+            		let stompClient = Stomp.over(socket);
+            		
+            		
             	});
                 
                 function orderInfo() {
@@ -79,9 +85,6 @@
                         </div>
                     </li>
                 <script>
-                $(document).ready(function() {
-                	accessIdChk();
-            	});
                 
                 function accessIdChk() {
             		$.ajax({
