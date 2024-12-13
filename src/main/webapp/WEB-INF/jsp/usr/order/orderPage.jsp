@@ -7,26 +7,31 @@
 <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
 
 <script>
-	$(function() {
-		let socket = new SockJS('/ws-stomp');
-		let stompClient = Stomp.over(socket);
+	$(document).ready(function() {
 		orderStatusReload();
 		
-		stompClient.connect({}, function () {
-			stompClient.subscribe('/sub/message', function (message) {
-				orderStatusReload();
-			})
-		})
+		let socket = new SockJS('/ws-stomp');
+   		let stompClient = Stomp.over(socket);
+   		
+	    stompClient.connect({}, function () {
+	    	stompClient.subscribe('/sub/message', function (message) {
+	    		orderStatusReload();
+	    	});
+	   	});
 	})
+	
 	const orderStatusReload = function() {
 	    $.ajax({
 	        url: '/usr/order/updateOrder',
 	        type: 'GET',
 	        dataType : 'json',
 			success : function(data) {
-				console.log(data.data.orderStatus);
 				$('#orderStatus').text(data.data.orderStatus);
-		        },
+				if(data.data.orderStatus != '대기 중') {
+					$('#cancleBtn').text('주문 진행중')
+	                   .prop('disabled', true)
+				}
+		    },
 			error : function(xhr, status, error) {
 				console.log(error);
 			}
@@ -65,12 +70,11 @@
 		    </div>
 	    </div>
 	    <div class="mt-8 text-center">
-	    <div>${order }</div>
 		    <form action="/usr/order/doOrderCancel">
-		    <input type="text" name="orderId" value="${order.getOrderMemberId() }" />
+		    <input type="hidden" name="orderId" value="${order.getOrderMemberId() }" />
 		        <div class="mt-8 flex justify-center">
 		            <div class="relative group flex items-center space-x-4">
-			        	<button type="submit" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"  onclick="return confirm('주문 접수 대기중 상태에서만 취소가 가능합니다. 주문을 취소하시겠습니까?');">
+			        	<button id="cancleBtn" type="submit" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"  onclick="return confirm('주문 접수 대기중 상태에서만 취소가 가능합니다. 주문을 취소하시겠습니까?');">
 			            	주문 취소
 			            </button>
 			            <div class="absolute left-full ml-4 py-1 px-3 bg-white text-sm text-gray-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">

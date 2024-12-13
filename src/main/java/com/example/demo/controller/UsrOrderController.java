@@ -49,10 +49,6 @@ public class UsrOrderController {
 		
 		orderService.doOrder(rq.getLoginedMemberId(),rtId[0]);
 		
-		Order order = orderService.getOrderByLoginedMemberId(rq.getLoginedMemberId());
-		
-		System.out.println(order.toString());
-		
 		return Util.jsReturn("주문이 접수되었습니다", String.format("/usr/order/orderPage?loginId=%d", rq.getLoginedMemberId()));
 	}
 	
@@ -131,7 +127,6 @@ public class UsrOrderController {
 	@GetMapping("/usr/order/riderCall")
 	@ResponseBody
 	public ResultData<String> riderCall(HttpServletRequest req, Model model) {
-
 	return ResultData.from("S-1", "라이더를 호출합니다.", "픽업 대기중");
 	}
 	

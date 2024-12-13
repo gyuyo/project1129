@@ -9,76 +9,42 @@
 <script>
 
 	$(document).ready(function() {
-		
-	    let socket = new SockJS('/ws-stomp');
-		let stompClient = Stomp.over(socket);
-		
-		stompClient.connect({}, function () {
-			stompClient.subscribe('/sub/message', function (message) {
-				
-			})
-		})
-		
+		test1();
 		$('#acceptBtn').click(function(){
-		    let sender = $('#sender').val();
-		    let content = $('#message').val();
-		    console.log(sender);
-		    
-		    stompClient.send('/pub/messages', {}, JSON.stringify({
-		        sender: sender,
-		        content: content
-		    }));
-		    
-		    window.location.href = '/usr/order/doOrderAccept?orderId=' + sender;
+		    window.location.href = '/usr/order/doOrderAccept?orderId=' + ${order.getOrderMemberId()};
+			test2();
 		})
-	});
-// 	    var orderText = localStorage.getItem("orderStatText");
-// 	    var storedText = localStorage.getItem("riderButtonText");
-	    
-// 	    if (storedText) {
-// 	        $('#orderStat').text(orderText);
-// 	        $('#rider-call-btn').text(storedText);
-// 	    }
-	    
-	
-// 	const doRiderCall = function(orderId) {
-	    
-// 	    var buttonText = localStorage.getItem("riderButtonText");
 		
-// 	    if (buttonText === "배달 출발") {
-// 	        alert("배달이 시작되었습니다.");
-// 	        localStorage.setItem("orderStatText", '배달 중');
-// 	        window.location.href = '/usr/order/doRiderCall?orderId=' + orderId;
-// 	    } else {
-// 		    localStorage.setItem("orderStatText", "요리 중");
-// 		    localStorage.setItem("riderButtonText", "라이더 호출");
-// 	    	$.ajax({
-// 		        url: '/usr/order/riderCall',
-// 		        type: 'GET',
-// 		        data: {
-// 		            orderId: orderId
-// 		        },
-// 		        dataType: 'json',
-// 		        success: function(data) {
-// 		            if (data.success) {
-// 		                if (data.data != null) {
-// 		                    alert(data.resultMsg);
-// 		                    $('#orderStat').text('픽업 대기중');
-// 		                    localStorage.setItem("orderStatText", '픽업 대기중');
-// 		                    $('#rider-call-btn').text('배달 출발');
-// 		                    localStorage.setItem("riderButtonText", '배달 출발');
-// 		                }
-// 		            }
-// 		        }
-// 		    });
-// 		}
-// 	}
+		$('#doRiderCall').click(function(){
+			
+		let buttonText = $('#doRiderCall').text();
+			
+	    if (buttonText === "배달 출발") {
+	        alert("배달이 시작되었습니다.");
+	        window.location.href = '/usr/order/doRiderCall?orderId=' + ${order.getOrderMemberId()};
+	    } else {
+	    	$.ajax({
+		        url: '/usr/order/riderCall',
+		        type: 'GET',
+		        data: {
+		            orderId: ${order.getOrderMemberId()}
+		        },
+		        dataType: 'json',
+		        success: function(data) {
+	            	alert(data.resultMsg);
+		        }
+		   		});
+			}
+		})
+		
+	})
+	
 </script>
 <section class="mt-8 flex-1 px-4">
 	<div class="container mx-auto border-b-2  w-9/12 border-slate-200">
 	    <div class="bg-blue-100 p-4 rounded-lg shadow-lg text-center mb-6">
 	        <h3 class="text-2xl font-semibold text-gray-800">주문 상태</h3>
-	        <p id="orderStat" class="text-xl text-gray-600 mt-2">${order.getOrderStatus()}</p>
+	        <p id="orderStat" class="text-xl text-gray-600 mt-2">${order.getOrderStatus() }</p>
 	    </div>
 	
 	    <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -105,12 +71,19 @@
 		    </div>
 	    </div>
 	    <div class="mt-8 text-center">
-			<button id="acceptBtn" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
-				주문 접수
-			</button>
-			<a href="/usr/order/doOrderCancel?orderId=${order.getOrderMemberId()}" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors shadow-md hover:shadow-lg text-center inline-block" onclick="return confirm('사유가 불분명한 취소는 불이익을 받을 수 있습니다. 주문을 취소하시겠습니까?');">
-			    주문 취소
-			</a>
+	    	<c:if test="${order.orderStatus == '대기 중'}">
+				<button id="acceptBtn" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
+					주문 접수
+				</button>
+				<a href="/usr/order/doOrderCancel?orderId=${order.getOrderMemberId()}" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors shadow-md hover:shadow-lg text-center inline-block" onclick="return confirm('사유가 불분명한 취소는 불이익을 받을 수 있습니다. 주문을 취소하시겠습니까?');">
+				    주문 취소
+				</a>
+			</c:if>
+	    	<c:if test="${order.orderStatus == '요리 중'}">
+				<button id="doRiderCall" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
+					라이더 호출
+				</button>
+			</c:if>
 	    	<input class="input input-bordered" id="sender" type="hidden" value="${order.getOrderMemberId()}">
 			<input class="input input-bordered" id="message" type="hidden" value="1">
 		    <div id="order-notifications" class="mt-6"></div>

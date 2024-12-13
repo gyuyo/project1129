@@ -10,11 +10,8 @@
 	
 	$(document).ready(function() {
 	    updateTotalPrice();
-	    
+	    test1();
 		$('#confirmBtn').click(function () {
-			
-			let sender = $('#sender').val();
-			let content = $('#message').val();
 			let restaurantId = $('#restaurantId').val();
 			let menus = $('#menus').val();
 			
@@ -25,17 +22,14 @@
 	            	restaurantId: restaurantId,
 	            	menus: menus
 		        },
-		        
 		        success : function(data) {
-					location.replace = "/usr/order/orderPage?loginId=" + ${rq.getLoginedMemberId() };
+					test2();
+					location.href = "/usr/order/orderPage?loginId=" + ${rq.getLoginedMemberId() };
 		        }
 			})
-             stompClient.send('/pub/messages', {}, JSON.stringify({
-                 sender: sender,
-                 content: content
-             }));
 		})
 	});
+	
 	async function changeQuantity(menuId, delta, unitPrice) {
 	    var $quantityElement = $("#quantity-" + menuId);
 	    var $priceElement = $("#price-" + menuId);
@@ -46,7 +40,7 @@
 	    if (newQuantity <= 0) {
 	        var isConfirmed = confirm("메뉴를 취소하시겠습니까?");
 	        if (isConfirmed) {
-	            window.location.href = "/usr/customer/menuDelete?menuId=" + menuId;
+	            location.href = "/usr/customer/menuDelete?menuId=" + menuId;
 	        } else {
 	            return; 
 	        }

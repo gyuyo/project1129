@@ -7,19 +7,18 @@
 <%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 
 <script>
-
-	$(function() {
-		let socket = new SockJS('/ws-stomp');
-		let stompClient = Stomp.over(socket);
+	$(document).ready(function() {
 		orderListReload();
 		
-		stompClient.connect({}, function () {
-			stompClient.subscribe('/sub/message', function () {
-				console.log("c");
-				orderListReload();
-			})
-		})
-	})
+		let socket = new SockJS('/ws-stomp');
+   		let stompClient = Stomp.over(socket);
+   		
+	    stompClient.connect({}, function () {
+	    	stompClient.subscribe('/sub/message', function (message) {
+	    		orderListReload();
+	            });
+	        });
+ 	});
 	
 	const orderListReload = function() {
 	    $.ajax({
@@ -27,8 +26,6 @@
 	        type: 'GET',
 	        dataType : 'json',
 			success : function(data) {
-		        console.log(data.data);
-		        
 	        	var orderListBody = $('#orderListBody');
 	            orderListBody.empty();
 	            var waitingCount = 0;
@@ -36,7 +33,6 @@
 				for (let i = 0; i < data.data.length; i++) {
 	                var order = data.data[i];
 	               	if(order.orderStatus.trim() === "대기 중") {
-		            	console.log("b");
 	               		waitingCount++;
 	               	}
 	                var orderRow = `
@@ -54,11 +50,10 @@
 				$('#waitingCount').text(`\${waitingCount}`);
 				
 				if (waitingCount > 0) {
-	                $('#waitingCount').removeClass('hidden'); // 대기 중 주문이 있으면 표시
+	                $('#waitingCount').removeClass('hidden');
 	            } else {
-	                $('#waitingCount').addClass('hidden'); // 대기 중 주문이 없으면 숨기기
+	                $('#waitingCount').addClass('hidden');
 	            }
-	            	console.log("a");
 		        },
 			error : function(xhr, status, error) {
 				console.log(error);

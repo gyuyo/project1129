@@ -54,11 +54,24 @@
                 $(document).ready(function() {
                 	orderInfo();
                 	accessIdChk();
-                	
                 	let socket = new SockJS('/ws-stomp');
             		let stompClient = Stomp.over(socket);
             		
-            		
+        			function test1() {
+       			    	stompClient.connect({}, function () {
+       			        });
+       			    }
+        			
+        			function test2() {
+ 			            let sender = $('#sender').val();
+ 			            let content = $('#message').val();
+ 			            stompClient.send('/pub/messages', {}, JSON.stringify({
+ 			                sender: sender,
+ 			                content: content
+ 			            }));
+       			    }
+        		window.test1 = test1;
+        		window.test2 = test2;
             	});
                 
                 function orderInfo() {
@@ -76,15 +89,6 @@
             	        }
             	    });
             	}
-                </script>
-                    <li id="orderInfo" class="hidden flex items-center min-h-[40px]">
-                        <div data-tip="ORDER INFO">
-                            <a href="${pageContext.request.contextPath}/usr/order/orderPage?loginId=${rq.getLoginedMemberId() }">
-                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2"><i class="fa-solid fa-jet-fighter"></i></button>
-                            </a>
-                        </div>
-                    </li>
-                <script>
                 
                 function accessIdChk() {
             		$.ajax({
@@ -106,6 +110,13 @@
             	    });
             	}
                 </script>
+                    <li id="orderInfo" class="hidden flex items-center min-h-[40px]">
+                        <div data-tip="ORDER INFO">
+                            <a href="${pageContext.request.contextPath}/usr/order/orderPage?loginId=${rq.getLoginedMemberId() }">
+                                <button class="text-white hover:text-[#B8B8B8] px-4 py-2"><i class="fa-solid fa-jet-fighter"></i></button>
+                            </a>
+                        </div>
+                    </li>
                     <li id="orderChkBtn" class="flex items-center min-h-[40px]">
                         <div data-tip="ORDER CHK">
                             <a href="${pageContext.request.contextPath}/usr/order/orderList">
