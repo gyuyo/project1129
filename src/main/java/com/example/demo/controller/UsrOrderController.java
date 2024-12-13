@@ -127,7 +127,7 @@ public class UsrOrderController {
 	@GetMapping("/usr/order/riderCall")
 	@ResponseBody
 	public ResultData<String> riderCall(HttpServletRequest req, Model model) {
-	return ResultData.from("S-1", "라이더를 호출합니다.", "픽업 대기중");
+	return ResultData.from("S-1", "라이더를 호출합니다.");
 	}
 	
 	@GetMapping("/usr/order/doRiderCall")

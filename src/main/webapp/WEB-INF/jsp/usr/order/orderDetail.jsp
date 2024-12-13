@@ -15,13 +15,20 @@
 			test2();
 		})
 		
+		let orderStatus = localStorage.getItem('orderStatus');
+		let riderCall = localStorage.getItem('riderCall');
+    
+	    if (riderCall === '배달 출발') {
+	        $('#orderStat').text("픽업 대기중");
+	        $('#doRiderCall').text("배달 출발");
+	    }
+	    
 		$('#doRiderCall').click(function(){
-			
 		let buttonText = $('#doRiderCall').text();
 			
 	    if (buttonText === "배달 출발") {
 	        alert("배달이 시작되었습니다.");
-	        window.location.href = '/usr/order/doRiderCall?orderId=' + ${order.getOrderMemberId()};
+// 	        window.location.href = '/usr/order/doRiderCall?orderId=' + ${order.getOrderMemberId()};
 	    } else {
 	    	$.ajax({
 		        url: '/usr/order/riderCall',
@@ -32,6 +39,10 @@
 		        dataType: 'json',
 		        success: function(data) {
 	            	alert(data.resultMsg);
+	            	$('#orderStat').text("픽업 대기중");
+	            	$('#doRiderCall').text("배달 출발");
+	            	localStorage.setItem('orderStat', '픽업 대기중');
+	            	localStorage.setItem('riderCall', '배달 출발');
 		        }
 		   		});
 			}

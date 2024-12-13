@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
-<footer class="footer bg-gradient-to-b from-[#707A8B] to-[#4B4F54] text-neutral-content p-8 mt-8">
+<footer class="footer bg-gradient-to-b from-[#FF7F50] to-[#FF6347] text-neutral-content p-8 mt-8">
     <nav>
         <h6 class="footer-title">Services</h6>
         <a class="link link-hover">Branding</a>
