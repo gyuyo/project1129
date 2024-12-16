@@ -8,44 +8,46 @@
 
 <script>
 	$(document).ready(function() {
-		orderListReload();
+		callListReload();
 		
 		let socket = new SockJS('/ws-stomp');
    		let stompClient = Stomp.over(socket);
    		
 	    stompClient.connect({}, function () {
 	    	stompClient.subscribe('/sub/message', function (message) {
-	    		orderListReload();
+				callListReload();
 	            });
 	        });
  	});
 	
-	const orderListReload = function() {
+	const callListReload = function() {
 	    $.ajax({
-	        url: '/usr/order/getOrderList',
+	        url: '/usr/rider/getCallList',
 	        type: 'GET',
 	        dataType : 'json',
 			success : function(data) {
-	        	var orderListBody = $('#orderListBody');
-	            orderListBody.empty();
+				
+				console.log(data.data);
+	        	var callListBody = $('#callListBody');
+	        	callListBody.empty();
 	            var waitingCount = 0;
 	            
 				for (let i = 0; i < data.data.length; i++) {
 	                var order = data.data[i];
-	               	if(order.orderStatus.trim() === "대기 중") {
+	               	if(order.orderStatus.trim() === "픽업 대기중") {
 	               		waitingCount++;
 	               	}
 	                var orderRow = `
 	                    <tr>
 	                        <td>${i + 1}</td>
-	                        <td class="hover:underline"><a href="orderDetail?orderId=\${order.orderMemberId}">대전광역시</a></td>
+	                        <td class="hover:underline"><a href="deliveryDetail?orderId=\${order.orderMemberId}">대전광역시</a></td>
 	                        <td>\${order.orderMemberId}</td>
 	                        <td>\${order.quantity}</td>
 	                        <td>\${order.totalPrice}</td>
 	                        <td>\${order.orderStatus}</td> 
 	                    </tr>
 	                `;
-	                orderListBody.append(orderRow); 
+	                callListBody.append(orderRow); 
 					 };
 				$('#waitingCount').text(`\${waitingCount}`);
 				
@@ -75,19 +77,19 @@
 		            <tr>
 		                <th>번호</th>
 		                <th>주소</th>
-		                <th>주문자</th>
+		                <th>매장이름</th>
 		                <th>메뉴수</th>
 		                <th>합계금액</th>
-		                <th>주문상태</th>
+		                <th>주문 상태</th>
 		            </tr>
-		            <tbody id="orderListBody">
+		            <tbody id="callListBody">
 		            </tbody>
 		        </table>
 		        <div id="waitingCountContainer" class="absolute top-6 right-40 z-50">
-    <span id="waitingCount" class="hidden bg-red-500 text-white text-lg font-bold py-1.5 px-3 rounded-full min-w-[35px] h-[35px] flex items-center justify-center border-2 border-white">
-        0
-    </span>
-</div>
+				    <span id="waitingCount" class="hidden bg-red-500 text-white text-lg font-bold py-1.5 px-3 rounded-full min-w-[35px] h-[35px] flex items-center justify-center border-2 border-white">
+				        0
+				    </span>
+				</div>
 		    </div>
 		</div>
 		<div class="w-9/12 mx-auto btns mt-3 text-sm flex justify-between">

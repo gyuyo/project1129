@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.dto.Member;
 import com.example.demo.dto.Order;
 import com.example.demo.dto.OrderMenu;
 import com.example.demo.dto.ResultData;
 import com.example.demo.dto.Rq;
 import com.example.demo.service.CustomerService;
+import com.example.demo.service.MemberService;
 import com.example.demo.service.OrderService;
 import com.example.demo.util.Util;
 
@@ -34,7 +36,7 @@ public class UsrOrderController {
 	public String doOrder(HttpServletRequest req, Model model, String menus, String restaurantId) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
-		orderService.doOrderDelete(rq.getLoginedMemberId());
+//		orderService.doOrderDelete(rq.getLoginedMemberId());
 		
 		String[] rtId = restaurantId.split(",");
 		String[] mns = menus.split(",");
@@ -92,6 +94,12 @@ public class UsrOrderController {
 		
 		Order order = orderService.getOrderByLoginedMemberId(rq.getLoginedMemberId());
 		
+		System.out.println(order);
+		
+		if(order.getOrderStatus().equals("배달 완료")) {
+			return ResultData.from("S-1", "오더 상태 확인");
+		}
+		
 		return ResultData.from("S-1", "오더 상태 확인", order);
 	}
 	
@@ -115,28 +123,27 @@ public class UsrOrderController {
 		Order order = orderService.getOrderStatus(orderId);
 		int totalPrice = orderService.getTotalPriceByOrderId(orderId);
 		List<OrderMenu> orderMenus = orderService.getOrderMenus(orderId);
-		
-		
+//		List<Member> members = memberService.getRiders();
+//		
 		model.addAttribute("order", order);
 		model.addAttribute("totalPrice", totalPrice);
 		model.addAttribute("orderMenus", orderMenus);
+//		model.addAttribute("members", members);
 		
 		return "usr/order/orderDetail";
 	}
 	
-	@GetMapping("/usr/order/riderCall")
-	@ResponseBody
-	public ResultData<String> riderCall(HttpServletRequest req, Model model) {
-	return ResultData.from("S-1", "라이더를 호출합니다.");
+	@GetMapping("/usr/order/callRider")
+	public String callRider(HttpServletRequest req, Model model, int orderId) {
+		
+		orderService.doOrderAccept(orderId, "픽업 대기중");
+		
+		return "usr/order/riderStatus";
 	}
 	
-	@GetMapping("/usr/order/doRiderCall")
-	@ResponseBody
-	public String doRiderCall(HttpServletRequest req, Model model, int orderId) {
-		
-		orderService.doOrderAccept(orderId, "배달 중");
-		
-		return Util.jsReturn("음식이 배달 중입니다.", String.format("/usr/order/orderDetail?orderId=%d",orderId));
+	@GetMapping("/usr/order/riderStatus")
+	public String riderStatus(HttpServletRequest req, Model model, int orderId) {
+		return "usr/order/riderStatus";
 	}
 
 	@GetMapping("/usr/order/doOrderCancel")

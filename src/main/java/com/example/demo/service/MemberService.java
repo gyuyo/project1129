@@ -81,4 +81,8 @@ public class MemberService {
 		return memberDao.getAccessIdChk(loginedMemberId);
 	}
 
+	public List<Member> getRiders() {
+		return memberDao.getRiders();
+	}
+
 }

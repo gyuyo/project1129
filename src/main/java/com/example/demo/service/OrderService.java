@@ -41,6 +41,9 @@ public class OrderService {
 		return orderDao.getOrderMenus(orderId);
 	}
 
+	public int getOwnerIdByLoginedMemberId(int loginedMemberId) {
+		return orderDao.getOwnerIdByLoginedMemberId(loginedMemberId);
+	}
 	public int getTotalPriceByOrderId(int orderId) {
 		return orderDao.getTotalPriceByOrderId(orderId);
 	}
@@ -55,5 +58,17 @@ public class OrderService {
 
 	public void doOrderAccept(int orderId, String orderStatus) {
 		orderDao.doOrderAccept(orderId, orderStatus);
+	}
+
+	public List<Order> gerOrderByRiderId(int loginedMemberId) {
+		return orderDao.gerOrderByRiderId(loginedMemberId);
+	}
+
+	public int getOwnerIdByOrderId(int orderId) {
+		return orderDao.getOwnerIdByOrderId(orderId);
+	}
+
+	public void doCallAccept(int orderId, int loginedMemberId, String orderStatus) {
+		orderDao.doCallAccept(orderId, loginedMemberId, orderStatus);
 	}
 }

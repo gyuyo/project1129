@@ -2,44 +2,54 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<c:set var="pageTitle" value="주문서" />
+<c:set var="pageTitle" value="배달현황" />
 
 <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
 
 <script>
 	$(document).ready(function() {
-		orderStatusReload();
 		
 		let socket = new SockJS('/ws-stomp');
    		let stompClient = Stomp.over(socket);
    		
 	    stompClient.connect({}, function () {
 	    	stompClient.subscribe('/sub/message', function (message) {
-	    		if(message.body == 1) {
-	    			orderStatusReload();
-	    			console.log(2);
-	    		} else {
-	    			location.href = "/usr/order/riderStatus?orderId=" + ${rq.getLoginedMemberId() };
-	    		}
+	    		
 	    	});
 	   	});
 	})
 	
-	const orderStatusReload = function() {
-	    $.ajax({
-	        url: '/usr/order/updateOrder',
-	        type: 'GET',
-	        dataType : 'json',
-			success : function(data) {
-				$('#orderStatus').text(data.data.orderStatus);
-				if(data.data.orderStatus != '대기 중') {
-					$('#cancleBtn').text('주문 진행중')
-	                   .prop('disabled', true)
-				}
-		    },
-	    })
-	}
+// 	const orderStatusReload = function() {
+// 	    $.ajax({
+// 	        url: '/usr/order/updateOrder',
+// 	        type: 'GET',
+// 	        dataType : 'json',
+// 			success : function(data) {
+// 				$('#orderStatus').text(data.data.orderStatus);
+// 				if(data.data.orderStatus != '대기 중') {
+// 					$('#cancleBtn').text('주문 진행중')
+// 	                   .prop('disabled', true)
+// 				}
+// 		    },
+// 			error : function(xhr, status, error) {
+// 				console.log(error);
+// 			}
+// 	    })
+// 	}
+	
 </script>
+	<div id="map" style="width:100%;height:400px;"></div>
+	<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zd75it6zp1"></script>
+		<script>
+		var map = new naver.maps.Map('map', {
+		    center: new naver.maps.LatLng(36.352722549264534, 127.3797320189312),
+		    zoom: 13
+		});
+		var marker = new naver.maps.Marker({
+		    position: new naver.maps.LatLng(36.352722549264534, 127.3797320189312),
+		    map: map
+		});
+		</script>
 
 <section class="mt-8 flex-1 px-4">
 	<div class="container mx-auto border-b-2  w-9/12 border-slate-200">
@@ -71,22 +81,6 @@
 	        <p class="text-2xl font-bold text-gray-800">₩${totalPrice }</p>
 		    </div>
 	    </div>
-	    <div class="mt-8 text-center">
-		    <form action="/usr/order/doOrderCancel">
-		    <input type="hidden" name="orderId" value="${order.getOrderMemberId() }" />
-		        <div class="mt-8 flex justify-center">
-		            <div class="relative group flex items-center space-x-4">
-			        	<button id="cancleBtn" type="submit" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"  onclick="return confirm('주문 접수 대기중 상태에서만 취소가 가능합니다. 주문을 취소하시겠습니까?');">
-			            	주문 취소
-			            </button>
-			            <div class="absolute left-full ml-4 py-1 px-3 bg-white text-sm text-gray-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-			           		<i class="fa-solid fa-circle-info text-blue-500 mr-2"></i>
-			            	<span>주문 접수 대기중 상태에서만 취소가 가능합니다.</span>
-			        	</div>
-		            </div>
-		        </div>
-		    </form>
-		</div>	
     </div>
 </section>
 

@@ -45,18 +45,6 @@ public interface CustomerDao {
 			""")
 	int getQuantityByMenuId(int menuId);
 	
-	@Select("""
-			SELECT ownerID
-			FROM restaurant AS r
-			INNER JOIN menu AS m
-			ON r.id = m.restaurantId
-			INNER JOIN shoppingCart AS s
-			ON m.id = s.menuId
-			WHERE s.memberId = #{loginedMemberId}
-			LIMIT 1
-			""")
-	int getOwnerIdByLoginedMemberId(int loginedMemberId);
-	
 	@Delete("""
 			DELETE FROM shoppingCart
 				WHERE menuId = #{menuId}

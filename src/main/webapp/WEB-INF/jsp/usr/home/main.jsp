@@ -125,15 +125,17 @@
 	<c:if test="${member.getAccessId() == 3}">
 		<section class="flex justify-center mt-8 px-8">
 		    <div class="relative group w-full md:w-1/2 h-80 bg-gradient-to-b from-[#FFD700] to-[#FF8C00] rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 flex justify-center items-center">
+		        
 		        <div class="text-center text-white z-10 opacity-100 group-hover:opacity-0 transition-opacity duration-300">
 		            <h3 class="text-xl font-semibold">주문 접수 활성화</h3>
 		            <p class="text-sm">주문을 접수하여 서비스 준비를 시작하세요!</p>
 		        </div>
+		        
 		        <div class="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
 		            <div class="text-center text-white">
-		                <h3 class="text-xl font-semibold">서비스</h3>
+		                <h3 class="text-xl font-semibold">주문 접수 활성화</h3>
 		                <div class="mt-4">
-		                    <button class="bg-[#FF7F50] text-white py-2 px-4 rounded-lg m-2 cursor-pointer" onclick="alert('주문 접수가 활성화되었습니다.')">주문 접수 활성화</button>
+		                    <a href="/usr/rider/callList" class="bg-[#FF7F50] text-white py-2 px-4 rounded-lg m-2 cursor-pointer">주문 받기</a>
 		                </div>
 		            </div>
 		        </div>

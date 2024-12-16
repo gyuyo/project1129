@@ -35,8 +35,4 @@ public class CustomerService {
 	public void doMenuDelete(int memberId, int menuId) {
 		customerDao.doMenuDelete(memberId, menuId);
 	}
-
-	public int getOwnerIdByLoginedMemberId(int loginedMemberId) {
-		return customerDao.getOwnerIdByLoginedMemberId(loginedMemberId);
-	}
 }

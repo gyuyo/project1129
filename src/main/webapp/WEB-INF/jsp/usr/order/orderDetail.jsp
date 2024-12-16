@@ -9,45 +9,25 @@
 <script>
 
 	$(document).ready(function() {
-		test1();
+		
+		let socket = new SockJS('/ws-stomp');
+   		let stompClient = Stomp.over(socket);
+   		
+	    stompClient.connect({}, function () {
+	    	stompClient.subscribe('/sub/message', function (message) {
+	    	});
+	   	});
+	    
 		$('#acceptBtn').click(function(){
-		    window.location.href = '/usr/order/doOrderAccept?orderId=' + ${order.getOrderMemberId()};
+		    location.href = '/usr/order/doOrderAccept?orderId=' + ${order.getOrderMemberId()};
+		    test2();
+		})
+		
+		$('#doRiderCall').click(function(){
+			alert("라이더를 호출합니다.");
+		    location.href = '/usr/order/callRider?orderId=' + ${order.getOrderMemberId()};
 			test2();
 		})
-		
-		let orderStatus = localStorage.getItem('orderStatus');
-		let riderCall = localStorage.getItem('riderCall');
-    
-	    if (riderCall === '배달 출발') {
-	        $('#orderStat').text("픽업 대기중");
-	        $('#doRiderCall').text("배달 출발");
-	    }
-	    
-		$('#doRiderCall').click(function(){
-		let buttonText = $('#doRiderCall').text();
-			
-	    if (buttonText === "배달 출발") {
-	        alert("배달이 시작되었습니다.");
-// 	        window.location.href = '/usr/order/doRiderCall?orderId=' + ${order.getOrderMemberId()};
-	    } else {
-	    	$.ajax({
-		        url: '/usr/order/riderCall',
-		        type: 'GET',
-		        data: {
-		            orderId: ${order.getOrderMemberId()}
-		        },
-		        dataType: 'json',
-		        success: function(data) {
-	            	alert(data.resultMsg);
-	            	$('#orderStat').text("픽업 대기중");
-	            	$('#doRiderCall').text("배달 출발");
-	            	localStorage.setItem('orderStat', '픽업 대기중');
-	            	localStorage.setItem('riderCall', '배달 출발');
-		        }
-		   		});
-			}
-		})
-		
 	})
 	
 </script>
@@ -55,7 +35,7 @@
 	<div class="container mx-auto border-b-2  w-9/12 border-slate-200">
 	    <div class="bg-blue-100 p-4 rounded-lg shadow-lg text-center mb-6">
 	        <h3 class="text-2xl font-semibold text-gray-800">주문 상태</h3>
-	        <p id="orderStat" class="text-xl text-gray-600 mt-2">${order.getOrderStatus() }</p>
+	        <p id="orderStatus" class="text-xl text-gray-600 mt-2">${order.getOrderStatus() }</p>
 	    </div>
 	
 	    <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -83,6 +63,8 @@
 	    </div>
 	    <div class="mt-8 text-center">
 	    	<c:if test="${order.orderStatus == '대기 중'}">
+				<c:set var="sd" value="${order.getOrderMemberId()} " />
+				<c:set var="ms" value="1" />
 				<button id="acceptBtn" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
 					주문 접수
 				</button>
@@ -92,11 +74,13 @@
 			</c:if>
 	    	<c:if test="${order.orderStatus == '요리 중'}">
 				<button id="doRiderCall" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
+					<c:set var="sd" value="3" />
+					<c:set var="ms" value="2" />
 					라이더 호출
 				</button>
 			</c:if>
-	    	<input class="input input-bordered" id="sender" type="hidden" value="${order.getOrderMemberId()}">
-			<input class="input input-bordered" id="message" type="hidden" value="1">
+	    	<input class="input input-bordered" id="sender" type="hidden" value="${sd }">
+			<input class="input input-bordered" id="message" type="hidden" value="${ms }">
 		    <div id="order-notifications" class="mt-6"></div>
 		</div>
     </div>

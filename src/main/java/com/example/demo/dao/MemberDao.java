@@ -79,4 +79,11 @@ public interface MemberDao {
 			""")
 	int getAccessIdChk(int loginedMemberId);
 	
+	@Select("""
+			SELECT * 
+				FROM `member`
+				WHERE accessId = 3
+			""")
+	List<Member> getRiders();
+	
 }

@@ -43,9 +43,11 @@ public class UsrCustomerController {
 			return ResultData.from("F-2", "로그인 후 이용할 수 있습니다.");
 		}
 		
-		Order order = orderService.getOrderStatus(rq.getLoginedMemberId());
+	    Order order = orderService.getOrderStatus(rq.getLoginedMemberId());
 		
-		if(order != null) {
+		System.out.println(order);
+		
+		if(order != null && !order.getOrderStatus().equals("배달 완료")) {
 			return ResultData.from("F-2", "주문이 진행중입니다.");
 		}
 		
@@ -73,7 +75,7 @@ public class UsrCustomerController {
 		List<Menu> menus = customerService.getMenuByLoginedMemberId(rq.getLoginedMemberId());
 		int ownerId = 0; 
 		if(menus.size() > 0) {
-			ownerId = customerService.getOwnerIdByLoginedMemberId(rq.getLoginedMemberId());
+			ownerId = orderService.getOwnerIdByLoginedMemberId(rq.getLoginedMemberId());
 		}
 		
 		model.addAttribute("menus", menus);

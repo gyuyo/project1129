@@ -33,6 +33,8 @@ public interface OrderDao {
 			SELECT *
 				FROM `order`
 				WHERE orderMemberId = #{orderId}
+				ORDER BY id DESC
+				limit 1
 			""")
 	Order getOrderStatus(int orderId);
 	
@@ -51,6 +53,29 @@ public interface OrderDao {
 			""")
 	List<OrderMenu> getOrderMenus(int orderId);
 	
+
+	@Select("""
+			SELECT ownerID
+			FROM restaurant AS r
+			INNER JOIN menu AS m
+			ON r.id = m.restaurantId
+			INNER JOIN shoppingCart AS s
+			ON m.id = s.menuId
+			WHERE s.memberId = #{loginedMemberId}
+			LIMIT 1
+			""")
+	int getOwnerIdByLoginedMemberId(int loginedMemberId);
+	
+	@Select("""
+			SELECT ownerID
+			FROM restaurant AS r
+			INNER JOIN `order` AS o
+			ON r.id = o.restaurantId
+			WHERE o.orderMemberId = #{orderId}
+			LIMIT 1
+			""")
+	int getOwnerIdByOrderId(int orderId);
+	
 	@Select("""
 			SELECT IFNULL(SUM(quantity * price),0) AS totalPrice
 				FROM orderMenu AS o
@@ -64,6 +89,8 @@ public interface OrderDao {
 			SELECT *
 				FROM `order`
 				WHERE orderMemberId	= #{loginedMemberId}
+				ORDER BY id DESC 
+				LIMIT 1
 			""")
 	Order getOrderByLoginedMemberId(int loginedMemberId);
 	
@@ -83,7 +110,8 @@ public interface OrderDao {
 				INNER JOIN restaurant AS r
 				ON o.restaurantId = r.id
 				WHERE r.ownerId = #{loginedMemberId}
-				GROUP BY o.orderMemberId
+				GROUP BY o.id
+				ORDER BY o.id DESC
 			""")
 	List<Order> gerOrderByOwnerId(int loginedMemberId);
 	
@@ -93,5 +121,29 @@ public interface OrderDao {
 				WHERE orderMemberId = #{orderId}
 			""")
 	void doOrderAccept(int orderId, String orderStatus);
+	
+	@Select("""
+			SELECT *, SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
+				FROM orderMenu AS om
+				INNER JOIN menu AS m
+				ON om.menuId = m.id
+				INNER JOIN `order` AS o
+				ON om.orderId = o.orderMemberId
+				INNER JOIN restaurant AS r
+				ON o.restaurantId = r.id
+				WHERE (o.riderMemberId = -1 AND o.orderStatus = '픽업 대기중')
+				OR (o.riderMemberId = 3)
+				GROUP BY o.id
+				ORDER BY o.id DESC
+			""")
+	List<Order> gerOrderByRiderId(int loginedMemberId);
+	
+	@Update("""
+			UPDATE `order`
+				SET orderStatus = #{orderStatus},
+					riderMemberId = #{loginedMemberId}
+				WHERE orderMemberId = #{orderId}
+			""")
+	void doCallAccept(int orderId, int loginedMemberId, String orderStatus);
 	
 }

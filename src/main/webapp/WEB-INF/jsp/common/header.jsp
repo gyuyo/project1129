@@ -95,12 +95,19 @@
 	                        type: 'GET',  
 	                        dataType: 'json',  
 	                        success: function(data) {
+	                        	
 	                            if(data.data == 2){
 	                                $("#shoppingCartBtn").addClass("hidden");
+	                                $("#riderChkBtn").addClass("hidden");
 	                                $("#orderChkBtn").removeClass("hidden");
-	                            } else {
-	                                $("#shoppingCartBtn").removeClass("hidden");
+	                            } else if(data.data == 3){
+	                                $("#shoppingCartBtn").addClass("hidden");
 	                                $("#orderChkBtn").addClass("hidden");
+	                                $("#riderChkBtn").removeClass("hidden");
+	                            } else {
+	                                $("#orderChkBtn").addClass("hidden");
+	                                $("#riderChkBtn").addClass("hidden");
+	                                $("#shoppingCartBtn").removeClass("hidden");
 	                            }
 	                        },
 	                        error: function(xhr, status, error) {
@@ -120,6 +127,13 @@
 	                    <div data-tip="ORDER CHK">
 	                        <a href="${pageContext.request.contextPath}/usr/order/orderList">
 	                            <button class="text-white hover:text-[#FFD700] px-4 py-2"><i class="fa-solid fa-clipboard-check"></i></button>
+	                        </a>
+	                    </div>
+	                </li>
+	                <li id="riderChkBtn" class="flex items-center min-h-[40px]">
+	                    <div data-tip="RIDER CHK">
+	                        <a href="${pageContext.request.contextPath}/usr/rider/callList">
+	                            <button class="text-white hover:text-[#FFD700] px-4 py-2"><i class="fa-solid fa-motorcycle"></i></button>
 	                        </a>
 	                    </div>
 	                </li>
