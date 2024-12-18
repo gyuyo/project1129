@@ -15,20 +15,38 @@
    		
 	    stompClient.connect({}, function () {
 	    	stompClient.subscribe('/sub/message', function (message) {
+	    		console.log(message);
 	    		if(message.body == 1) {
 	    			orderStatusReload();
-	    			console.log(2);
 	    		} else {
 	    			location.href = "/usr/order/riderStatus?orderId=" + ${rq.getLoginedMemberId() };
 	    		}
 	    	});
 	   	});
+	    
+	    $('#cancleBtn').click(function () {
+			$.ajax({
+	            url: '/usr/order/doOrderCancel', 
+	            type: 'GET', 
+	            data: {
+	            	orderNum: ${order.getId() }
+		        },
+		        success : function(data) {
+					test2();
+					location.href = "/usr/home/main";
+		        }
+			})
+		})
+	    
 	})
 	
 	const orderStatusReload = function() {
 	    $.ajax({
 	        url: '/usr/order/updateOrder',
 	        type: 'GET',
+	        data: {
+	        	orderNum : ${order.getId() }
+	        },
 	        dataType : 'json',
 			success : function(data) {
 				$('#orderStatus').text(data.data.orderStatus);
@@ -55,7 +73,7 @@
 					<div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${orderMenu.getMenuId()}">
 						<img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
 					    	<div class="flex-1">
-					        	<p class="text-xl font-semibold text-[#4B4F54]">${orderMenu.getName()}</p>
+					        	<p class="text-xl font-semibold text-[#4B4F54]">${orderMenu.getMenuName()}</p>
 					            <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${orderMenu.getMenuId()}">${orderMenu.getPrice() * orderMenu.getQuantity()}</span>원</p>
 					        </div>
 					        <div class="flex flex-col items-center">
@@ -72,20 +90,19 @@
 		    </div>
 	    </div>
 	    <div class="mt-8 text-center">
-		    <form action="/usr/order/doOrderCancel">
-		    <input type="hidden" name="orderId" value="${order.getOrderMemberId() }" />
-		        <div class="mt-8 flex justify-center">
-		            <div class="relative group flex items-center space-x-4">
-			        	<button id="cancleBtn" type="submit" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"  onclick="return confirm('주문 접수 대기중 상태에서만 취소가 가능합니다. 주문을 취소하시겠습니까?');">
-			            	주문 취소
-			            </button>
-			            <div class="absolute left-full ml-4 py-1 px-3 bg-white text-sm text-gray-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-			           		<i class="fa-solid fa-circle-info text-blue-500 mr-2"></i>
-			            	<span>주문 접수 대기중 상태에서만 취소가 가능합니다.</span>
-			        	</div>
-		            </div>
-		        </div>
-		    </form>
+	        <div class="mt-8 flex justify-center">
+	            <div class="relative group flex items-center space-x-4">
+		        	<button id="cancleBtn" type="submit" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"  onclick="return confirm('주문 접수 대기중 상태에서만 취소가 가능합니다. 주문을 취소하시겠습니까?');">
+		            	주문 취소
+		            </button>
+		            <div class="absolute left-full ml-4 py-1 px-3 bg-white text-sm text-gray-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+		           		<i class="fa-solid fa-circle-info text-blue-500 mr-2"></i>
+		            	<span>주문 접수 대기중 상태에서만 취소가 가능합니다.</span>
+		        	</div>
+	            </div>
+	            <input class="input input-bordered" id="sender" type="hidden" value="${ownerId }">
+				<input class="input input-bordered" id="message" type="hidden" value="1">
+	        </div>
 		</div>	
     </div>
 </section>

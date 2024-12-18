@@ -63,6 +63,7 @@
 	                    
 	                    function test2() {
 	                        let sender = $('#sender').val();
+// 	                        let recipient = $('#recipient').val();
 	                        let content = $('#message').val();
 	                        stompClient.send('/pub/messages', {}, JSON.stringify({
 	                            sender: sender,
@@ -118,7 +119,7 @@
 	                </script>
 	                <li id="orderInfo" class="hidden flex items-center min-h-[40px]">
 	                    <div data-tip="ORDER INFO">
-	                        <a href="${pageContext.request.contextPath}/usr/order/orderPage?loginId=${rq.getLoginedMemberId() }">
+	                        <a href="${pageContext.request.contextPath}/usr/order/orderPage">
 	                            <button class="text-white hover:text-[#FFD700] px-4 py-2"><i class="fa-solid fa-jet-fighter"></i></button>
 	                        </a>
 	                    </div>

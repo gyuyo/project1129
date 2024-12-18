@@ -18,9 +18,10 @@ public interface OrderDao {
 			INSERT INTO orderMenu
 				SET orderId = #{orderId}
 				, menuId = #{menuId}
+				, orderNum = #{lastOrderNum}
 				, quantity = #{quantity}
 			""")
-	void doMenuOrder(int orderId, int menuId, int quantity);
+	void doMenuOrder(int orderId, int menuId, int lastOrderNum, int quantity);
 	
 	@Insert("""
 			INSERT INTO `order`
@@ -30,17 +31,24 @@ public interface OrderDao {
 	void doOrder(int orderMemberId, String restaurantId);
 	
 	@Select("""
+			SELECT id
+				FROM `order`
+				ORDER BY id DESC
+				LIMIT 1
+			""")
+	int getLastOrderNum();
+	
+	@Select("""
 			SELECT *
 				FROM `order`
-				WHERE orderMemberId = #{orderId}
+				WHERE id = #{orderNum}
 				ORDER BY id DESC
-				limit 1
 			""")
-	Order getOrderStatus(int orderId);
+	Order getOrderStatus(int orderNum);
 	
 	@Delete("""
 			DELETE FROM `order`
-				WHERE orderMemberId = #{orderId} 
+				WHERE id = #{orderNum} 
 			""")
 	void doOrderDelete(int orderId);
 	
@@ -49,9 +57,9 @@ public interface OrderDao {
 				FROM orderMenu AS o
 				INNER JOIN menu AS m
 				ON o.menuId = m.id
-				WHERE orderId = #{orderId}
+				WHERE o.orderNum = #{orderNum}
 			""")
-	List<OrderMenu> getOrderMenus(int orderId);
+	List<OrderMenu> getOrderMenus(int orderNum);
 	
 
 	@Select("""
@@ -71,19 +79,19 @@ public interface OrderDao {
 			FROM restaurant AS r
 			INNER JOIN `order` AS o
 			ON r.id = o.restaurantId
-			WHERE o.orderMemberId = #{orderId}
+			WHERE o.id = #{orderNum}
 			LIMIT 1
 			""")
-	int getOwnerIdByOrderId(int orderId);
+	int getOwnerIdByOrderNum(int orderNum);
 	
 	@Select("""
 			SELECT IFNULL(SUM(quantity * price),0) AS totalPrice
 				FROM orderMenu AS o
 				INNER JOIN menu AS m
 				ON o.menuId = m.id
-				WHERE o.orderId = #{orderId}
+				WHERE o.orderNum = #{orderNum}
 			""")
-	int getTotalPriceByOrderId(int orderId);
+	int getTotalPriceByOrderNum(int orderNum);
 	
 	@Select("""
 			SELECT *
@@ -92,21 +100,21 @@ public interface OrderDao {
 				ORDER BY id DESC 
 				LIMIT 1
 			""")
-	Order getOrderByLoginedMemberId(int loginedMemberId);
+	Order getOrderByLoginedMemberId(int orderNum);
 	
 	@Delete("""
 			DELETE FROM orderMenu
-				WHERE orderId = #{orderId} 
+				WHERE orderNum = #{orderNum} 
 			""")
-	void doOrderMenuDelete(int orderId);
+	void doOrderMenuDelete(int orderNum);
 	
 	@Select("""
-			SELECT * , SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
+			SELECT *, SUM(m.price * om.quantity) AS totalPrice
 				FROM orderMenu AS om
 				INNER JOIN menu AS m
 				ON om.menuId = m.id
 				INNER JOIN `order` AS o
-				ON om.orderId = o.orderMemberId
+				ON om.orderNUm = o.id
 				INNER JOIN restaurant AS r
 				ON o.restaurantId = r.id
 				WHERE r.ownerId = #{loginedMemberId}
@@ -118,21 +126,21 @@ public interface OrderDao {
 	@Update("""
 			UPDATE `order`
 				SET orderStatus = #{orderStatus}
-				WHERE orderMemberId = #{orderId}
+				WHERE id = #{orderNum}
 			""")
-	void doOrderAccept(int orderId, String orderStatus);
+	void doOrderAccept(int orderNum, String orderStatus);
 	
 	@Select("""
-			SELECT *, SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
+			SELECT *, SUM(m.price * om.quantity) AS totalPrice
 				FROM orderMenu AS om
 				INNER JOIN menu AS m
 				ON om.menuId = m.id
 				INNER JOIN `order` AS o
-				ON om.orderId = o.orderMemberId
+				ON om.orderNUm = o.id
 				INNER JOIN restaurant AS r
 				ON o.restaurantId = r.id
 				WHERE (o.riderMemberId = -1 AND o.orderStatus = '픽업 대기중')
-				OR (o.riderMemberId = 3)
+				OR (o.riderMemberId = #{loginedMemberId})
 				GROUP BY o.id
 				ORDER BY o.id DESC
 			""")
@@ -142,8 +150,8 @@ public interface OrderDao {
 			UPDATE `order`
 				SET orderStatus = #{orderStatus},
 					riderMemberId = #{loginedMemberId}
-				WHERE orderMemberId = #{orderId}
+				WHERE id = #{orderNum}
 			""")
-	void doCallAccept(int orderId, int loginedMemberId, String orderStatus);
-	
+	void doCallAccept(int orderNum, int loginedMemberId, String orderStatus);
+
 }

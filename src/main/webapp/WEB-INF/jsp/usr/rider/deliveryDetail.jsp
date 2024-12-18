@@ -11,15 +11,15 @@
 		test1();
 		
 		$('#dvAcceptBtn').click(function () {
-		    location.href = '/usr/rider/doCallAccept?orderId=' + ${order.getOrderMemberId()};
+		    location.href = '/usr/rider/doCallAccept?orderNum=' + ${order.getId()};
 			test2();
 		})
 		$('#dvStartBtn').click(function () {
-		    location.href = '/usr/rider/doDelivery?orderId=' + ${order.getOrderMemberId()};
+		    location.href = '/usr/rider/doDelivery?orderNum=' + ${order.getId()};
 			test2();
 		})
 		$('#dvEndBtn').click(function () {
-		    location.href = '/usr/rider/deliveryEnd?orderId=' + ${order.getOrderMemberId()};
+		    location.href = '/usr/rider/deliveryEnd?orderNum=' + ${order.getId()};
 			test2();
 		})
 	});

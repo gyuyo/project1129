@@ -31,7 +31,7 @@ CREATE TABLE category (
 CREATE TABLE menu (
    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
    , restaurantId INT UNSIGNED NOT NULL
-   , `name` VARCHAR(100) NOT NULL
+   , menuName VARCHAR(100) NOT NULL
    , `description` TEXT NOT NULL
    , price INT UNSIGNED NOT NULL
    , readyTime INT UNSIGNED NOT NULL
@@ -60,7 +60,6 @@ CREATE TABLE likePoint(
 	, `point` INT NOT NULL DEFAULT 1
 );
 
-
 CREATE TABLE `order`(
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
 	, orderMemberId INT UNSIGNED NOT NULL
@@ -73,6 +72,7 @@ CREATE TABLE orderMenu (
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
 	, orderId INT UNSIGNED NOT NULL
 	, menuId INT UNSIGNED NOT NULL	
+	, orderNum INT UNSIGNED NOT NULL
 	, quantity INT UNSIGNED NOT NULL DEFAULT 1
 );
 
@@ -125,19 +125,19 @@ INSERT INTO restaurant
 
 INSERT INTO menu
 	SET	restaurantId = 1
-			, `name` = '김치찌개'
+			, menuName = '김치찌개'
 			, `description` = '김치찌개'
 			, price = 9000
 			, readyTime = 30;
 INSERT INTO menu
 	SET	restaurantId = 1
-			, `name` = '된장찌개'
+			, menuName = '된장찌개'
 			, `description` = '된장찌개'
 			, price = 8000
 			, readyTime = 20;
 INSERT INTO menu
 	SET	restaurantId = 1
-			, `name` = '갈비찜'
+			, menuName = '갈비찜'
 			, `description` = '갈비찜'
 			, price = 12000
 			, readyTime = 40;
@@ -210,8 +210,14 @@ INSERT `order`
 INSERT orderMenu
 	SET orderId = 1
 			, MenuId = 1
+			, orderNum = 9
+			, quantity = 1;
+
+INSERT orderMenu
+	SET orderId = 1
+			, MenuId = 1
+			, orderNum = 6
 			, quantity = 2;
-	
 SELECT *
 				FROM `order`
 				WHERE orderMemberId	= 1
@@ -221,7 +227,19 @@ SELECT *, SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
 				INNER JOIN menu AS m
 				ON om.menuId = m.id
 				INNER JOIN `order` AS o
-				ON om.orderId = o.orderMemberId
+				ON om.orderNUm = o.id
+				INNER JOIN restaurant AS r
+				ON o.restaurantId = r.id
+				WHERE r.ownerId = 2
+				GROUP BY o.id
+				ORDER BY o.id DESC
+				
+SELECT *, SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
+				FROM orderMenu AS om
+				INNER JOIN menu AS m
+				ON om.menuId = m.id
+				INNER JOIN `order` AS o
+				ON om.orderNUm = o.id
 				INNER JOIN restaurant AS r
 				ON o.restaurantId = r.id
 				WHERE (o.riderMemberId = -1 AND o.orderStatus = '픽업 대기중')
@@ -229,8 +247,3 @@ SELECT *, SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
 				GROUP BY o.id
 				ORDER BY o.id DESC
 				
-SELECT *
-				FROM `order`
-				WHERE orderMemberId	= 1
-				ORDER BY id DESC 
-				LIMIT 1

@@ -34,7 +34,7 @@ public interface MenuDao {
 	
 	@Update("""
 			UPDATE menu
-				SET `name` = #{menuName}
+				SET menuName = #{menuName}
 					, `description` = #{menuDescription}
 					, price = #{menuPrice}
 					, readyTime = #{readyTime}

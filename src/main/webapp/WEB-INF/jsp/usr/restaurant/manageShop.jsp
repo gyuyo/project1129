@@ -18,7 +18,7 @@
 					<c:forEach var="menu" items="${menus }">
 						<c:set var="chk" value="true" />
 				        <div class="relative group w-full h-64 bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 flex flex-col justify-center items-center p-4">
-				            <h4 class="text-lg font-semibold text-gray-800">${menu.getName() }</h4>
+				            <h4 class="text-lg font-semibold text-gray-800">${menu.getMenuName() }</h4>
 				            <p class="text-sm text-gray-600">${menu.getDescription() }</p>
 				            <p class="text-xl font-semibold text-gray-800 mt-2">₩${menu.getPrice() }</p>
 							<a href="/usr/menu/modifyMenu?menuId=${menu.getId() }" class="mt-4 bg-gradient-to-b from-[#A3D9A5] to-[#6CCF6A] text-white py-3 px-6 rounded-lg w-full text-center flex justify-center items-center shadow-lg transform transition duration-200 hover:scale-105 hover:shadow-xl">

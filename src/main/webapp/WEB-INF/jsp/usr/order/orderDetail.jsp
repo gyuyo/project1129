@@ -19,14 +19,14 @@
 	   	});
 	    
 		$('#acceptBtn').click(function(){
-		    location.href = '/usr/order/doOrderAccept?orderId=' + ${order.getOrderMemberId()};
 		    test2();
+		    location.href = '/usr/order/doOrderAccept?orderNum=' + ${order.getId()};
 		})
 		
 		$('#doRiderCall').click(function(){
 			alert("라이더를 호출합니다.");
-		    location.href = '/usr/order/callRider?orderId=' + ${order.getOrderMemberId()};
 			test2();
+		    location.href = '/usr/order/callRider?orderNum=' + ${order.getId()};
 		})
 	})
 	
@@ -45,7 +45,7 @@
 					<div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${orderMenu.getMenuId()}">
 						<img src="" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
 					    	<div class="flex-1">
-					        	<p class="text-xl font-semibold text-[#4B4F54]">${orderMenu.getName()}</p>
+					        	<p class="text-xl font-semibold text-[#4B4F54]">${orderMenu.getMenuName()}</p>
 					            <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${orderMenu.getMenuId()}">${orderMenu.getPrice() * orderMenu.getQuantity()}</span>원</p>
 					        </div>
 					        <div class="flex flex-col items-center">
@@ -68,7 +68,7 @@
 				<button id="acceptBtn" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
 					주문 접수
 				</button>
-				<a href="/usr/order/doOrderCancel?orderId=${order.getOrderMemberId()}" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors shadow-md hover:shadow-lg text-center inline-block" onclick="return confirm('사유가 불분명한 취소는 불이익을 받을 수 있습니다. 주문을 취소하시겠습니까?');">
+				<a href="/usr/order/doOrderCancel?orderNum=${order.getId()}" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors shadow-md hover:shadow-lg text-center inline-block" onclick="return confirm('사유가 불분명한 취소는 불이익을 받을 수 있습니다. 주문을 취소하시겠습니까?');">
 				    주문 취소
 				</a>
 			</c:if>

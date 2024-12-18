@@ -46,10 +46,10 @@ public class UsrRiderController {
 	}
 	
 	@GetMapping("/usr/rider/deliveryDetail")
-	public String deliveryDetail(Model model, int orderId) {
+	public String deliveryDetail(Model model, int orderNum) {
 		
-		int ownerId = orderService.getOwnerIdByOrderId(orderId);
-		Order order = orderService.getOrderByLoginedMemberId(orderId);
+		int ownerId = orderService.getOwnerIdByOrderNum(orderNum);
+		Order order = orderService.getOrderStatus(orderNum);
 		
 		model.addAttribute("ownerId", ownerId);
 		model.addAttribute("order", order);
@@ -59,28 +59,28 @@ public class UsrRiderController {
 	
 	@GetMapping("/usr/rider/doCallAccept")
 	@ResponseBody
-	public String doCallAccept(HttpServletRequest req, int orderId) {
+	public String doCallAccept(HttpServletRequest req, int orderNum) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
-		orderService.doCallAccept(orderId, rq.getLoginedMemberId(),"배달 준비중");
+		orderService.doCallAccept(orderNum, rq.getLoginedMemberId(),"배달 준비중");
 		
-		return Util.jsReturn("배달 콜을 접수하였습니다.", String.format("/usr/rider/deliveryDetail?orderId=%d",orderId));
+		return Util.jsReturn("배달 콜을 접수하였습니다.", String.format("/usr/rider/deliveryDetail?orderNum=%d",orderNum));
 	}
 	
 	@GetMapping("/usr/rider/doDelivery")
 	@ResponseBody
-	public String doDelivery(int orderId) {
+	public String doDelivery(int orderNum) {
 		
-		orderService.doOrderAccept(orderId, "배달 중");
+		orderService.doOrderAccept(orderNum, "배달 중");
 		
-		return Util.jsReturn("배달이 시작되었습니다.", String.format("/usr/rider/deliveryDetail?orderId=%d",orderId));
+		return Util.jsReturn("배달이 시작되었습니다.", String.format("/usr/rider/deliveryDetail?orderNum=%d",orderNum));
 	}
 	
 	@GetMapping("/usr/rider/deliveryEnd")
 	@ResponseBody
-	public String deliveryEnd(int orderId) {
+	public String deliveryEnd(int orderNum) {
 		
-		orderService.doOrderAccept(orderId, "배달 완료");
+		orderService.doOrderAccept(orderNum, "배달 완료");
 		
 		return Util.jsReturn("배달이 완료되었습니다.", "/usr/home/main");
 	}

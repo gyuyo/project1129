@@ -65,7 +65,7 @@
 					<div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${orderMenu.getMenuId()}">
 						<img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
 					    	<div class="flex-1">
-					        	<p class="text-xl font-semibold text-[#4B4F54]">${orderMenu.getName()}</p>
+					        	<p class="text-xl font-semibold text-[#4B4F54]">${orderMenu.getMenuName()}</p>
 					            <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${orderMenu.getMenuId()}">${orderMenu.getPrice() * orderMenu.getQuantity()}</span>원</p>
 					        </div>
 					        <div class="flex flex-col items-center">

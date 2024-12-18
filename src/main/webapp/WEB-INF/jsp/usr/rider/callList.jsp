@@ -39,10 +39,9 @@
 	               	}
 	                var orderRow = `
 	                    <tr>
-	                        <td>${i + 1}</td>
-	                        <td class="hover:underline"><a href="deliveryDetail?orderId=\${order.orderMemberId}">대전광역시</a></td>
-	                        <td>\${order.orderMemberId}</td>
-	                        <td>\${order.quantity}</td>
+	                        <td>\${data.data.length - i}</td>
+	                        <td class="hover:underline"><a href="deliveryDetail?orderNum=\${order.orderNum}&orderId=\${order.orderMemberId}">대전광역시</a></td>
+	                        <td>\${order.name}</td>
 	                        <td>\${order.totalPrice}</td>
 	                        <td>\${order.orderStatus}</td> 
 	                    </tr>
@@ -70,7 +69,6 @@
 		                <col width="60"/>
 		                <col />
 		                <col width="100"/>
-		                <col width="100"/>
 		                <col width="120"/>
 		                <col width="120"/>
 		            </colgroup>
@@ -78,7 +76,6 @@
 		                <th>번호</th>
 		                <th>주소</th>
 		                <th>매장이름</th>
-		                <th>메뉴수</th>
 		                <th>합계금액</th>
 		                <th>주문 상태</th>
 		            </tr>

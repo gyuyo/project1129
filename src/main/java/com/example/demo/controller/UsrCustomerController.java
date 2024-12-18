@@ -45,7 +45,7 @@ public class UsrCustomerController {
 		
 	    Order order = orderService.getOrderStatus(rq.getLoginedMemberId());
 		
-		System.out.println(order);
+//		System.out.println(order);
 		
 		if(order != null && !order.getOrderStatus().equals("배달 완료")) {
 			return ResultData.from("F-2", "주문이 진행중입니다.");

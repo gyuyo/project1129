@@ -11,9 +11,12 @@
 	$(document).ready(function() {
 	    updateTotalPrice();
 	    test1();
+	    
 		$('#confirmBtn').click(function () {
 			let restaurantId = $('#restaurantId').val();
-			let menus = $('#menus').val();
+			let menus = $('input[name="menus"]').map(function() {
+		        return $(this).val();
+		    }).get();
 			
 			$.ajax({
 	            url: '/usr/order/doOrder', 
@@ -24,7 +27,7 @@
 		        },
 		        success : function(data) {
 					test2();
-					location.href = "/usr/order/orderPage?loginId=" + ${rq.getLoginedMemberId() };
+					location.href = "/usr/order/orderPage";
 		        }
 			})
 		})
@@ -101,7 +104,7 @@
 				            <img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
 				            
 				            <div class="flex-1">
-				                <a href="/usr/restaurant/detail?id=${menu.getRestaurantId() }" class="text-xl font-semibold text-[#4B4F54]">${menu.getName()}</a>
+				                <a href="/usr/restaurant/detail?id=${menu.getRestaurantId() }" class="text-xl font-semibold text-[#4B4F54]">${menu.getMenuName()}</a>
 				                <p class="text-gray-500 mb-2">${menu.getDescription()}.</p>
 				                <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${menu.getMenuId()}">${menu.getPrice() * menu.getQuantity()}</span>원</p>
 				            </div>
@@ -138,7 +141,7 @@
 				                <div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${menu.getMenuId()}">
 				                    <img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
 				                    <div class="flex-1">
-				                        <h2 class="text-xl font-semibold text-[#4B4F54]">${menu.getName()}</h2>
+				                        <h2 class="text-xl font-semibold text-[#4B4F54]">${menu.getMenuName()}</h2>
 				                        <p class="text-gray-500 mb-2">${menu.getDescription()}.</p>
 				                        <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${menu.getMenuId()}">${menu.getPrice() * menu.getQuantity()}</span>원</p>
 				                    </div>
