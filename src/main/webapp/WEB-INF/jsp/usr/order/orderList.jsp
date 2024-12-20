@@ -12,12 +12,14 @@
 		
 		let socket = new SockJS('/ws-stomp');
    		let stompClient = Stomp.over(socket);
-   		
+   	 	let userId = ${rq.getLoginedMemberId()}
+   	 	
 	    stompClient.connect({}, function () {
-	    	stompClient.subscribe('/sub/message', function (message) {
-	    		orderListReload();
-	            });
+	        stompClient.subscribe(`/sub/user/\${userId}/queue/messages`, function (message) {
+	            orderListReload();
 	        });
+	    });
+	    
  	});
 	
 	const orderListReload = function() {

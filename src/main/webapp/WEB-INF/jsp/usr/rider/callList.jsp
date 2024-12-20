@@ -12,9 +12,10 @@
 		
 		let socket = new SockJS('/ws-stomp');
    		let stompClient = Stomp.over(socket);
+   		let userId = ${rq.getLoginedMemberId()};
    		
 	    stompClient.connect({}, function () {
-	    	stompClient.subscribe('/sub/message', function (message) {
+	    	stompClient.subscribe(`/sub/user/\${userId}/queue/messages`, function (message) {
 				callListReload();
 	            });
 	        });
@@ -26,8 +27,6 @@
 	        type: 'GET',
 	        dataType : 'json',
 			success : function(data) {
-				
-				console.log(data.data);
 	        	var callListBody = $('#callListBody');
 	        	callListBody.empty();
 	            var waitingCount = 0;

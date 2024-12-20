@@ -103,6 +103,11 @@ public class UsrMemberController {
 
 		return "usr/member/myPage";
 	}
+	
+	@GetMapping("/usr/member/addrModify")
+	public String addrModify() {
+		return "usr/customer/addrModify";
+	}
 
 	@GetMapping("/usr/member/checkPw")
 	public String checkPw() {

@@ -280,6 +280,18 @@
 		<div class="btns mx-auto my-3 text-sm flex justify-between">
 			<button onclick="history.back();">뒤로가기</button>
 		</div>
+		<div id="map" class="h-96"></div>
+				<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=zd75it6zp1"></script>
+					<script>
+					var map = new naver.maps.Map('map', {
+					    center: new naver.maps.LatLng(${restaurant.getLatitude() }, ${restaurant.getLongitude() }),
+					    zoom: 15
+					});
+					var marker = new naver.maps.Marker({
+					    position: new naver.maps.LatLng(${restaurant.getLatitude() }, ${restaurant.getLongitude() }),
+					    map: map
+					});
+				</script>
 	</div>
 </section>
 

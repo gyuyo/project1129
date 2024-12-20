@@ -9,24 +9,48 @@
 <script>
 
 	$(document).ready(function() {
+		if ("${order.getOrderStatus()}".includes("배달")) {
+			location.href = "/usr/order/riderStatus?orderNum=" + ${order.getId()}
+		};
 		
 		let socket = new SockJS('/ws-stomp');
    		let stompClient = Stomp.over(socket);
+   		let userId = ${rq.getLoginedMemberId()};
    		
 	    stompClient.connect({}, function () {
-	    	stompClient.subscribe('/sub/message', function (message) {
+	    	stompClient.subscribe(`/sub/user/\${userId}/queue/messages`, function (message) {
+                test2();
+	    		location.href = "/usr/order/riderStatus?orderNum=" + ${order.getId()}
 	    	});
 	   	});
 	    
-		$('#acceptBtn').click(function(){
-		    test2();
-		    location.href = '/usr/order/doOrderAccept?orderNum=' + ${order.getId()};
+		$('#acceptBtn').click(function () {
+			$.ajax({
+	            url: '/usr/order/doOrderAccept', 
+	            type: 'GET', 
+	            data: {
+	            	orderNum: ${order.getId()}
+		        },
+		        success : function() {
+					test2();
+					location.href = "/usr/order/orderDetail?orderNum=" + ${order.getId()};
+		        }
+			})
 		})
 		
 		$('#doRiderCall').click(function(){
 			alert("라이더를 호출합니다.");
-			test2();
-		    location.href = '/usr/order/callRider?orderNum=' + ${order.getId()};
+			$.ajax({
+	            url: '/usr/order/callRider', 
+	            type: 'GET', 
+	            data: {
+	            	orderNum: ${order.getId()}
+		        },
+		        success : function() {
+					test2();
+					location.href = "/usr/order/orderDetail?orderNum=" + ${order.getId()};
+		        }
+			})
 		})
 	})
 	
@@ -63,7 +87,7 @@
 	    </div>
 	    <div class="mt-8 text-center">
 	    	<c:if test="${order.orderStatus == '대기 중'}">
-				<c:set var="sd" value="${order.getOrderMemberId()} " />
+				<c:set var="rc" value="${order.getOrderMemberId()}" />
 				<c:set var="ms" value="1" />
 				<button id="acceptBtn" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
 					주문 접수
@@ -74,13 +98,18 @@
 			</c:if>
 	    	<c:if test="${order.orderStatus == '요리 중'}">
 				<button id="doRiderCall" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg mb-4 mr-4 text-center inline-block">
-					<c:set var="sd" value="3" />
+					<c:set var="rc" value="3" />
 					<c:set var="ms" value="2" />
 					라이더 호출
 				</button>
 			</c:if>
-	    	<input class="input input-bordered" id="sender" type="hidden" value="${sd }">
-			<input class="input input-bordered" id="message" type="hidden" value="${ms }">
+			<c:if test="${order.orderStatus == '픽업 대기중'}">
+				<c:set var="rc" value="${order.getOrderMemberId()}" />
+				<c:set var="ms" value="2" />
+			</c:if>
+	    	<input class="input input-bordered" id="sender" type="hidden" value="${rq.getLoginedMemberId()}">
+			<input class="input input-bordered" id="message" type="hidden" value="${ms}">
+			<input class="input input-bordered" id="recipientId" type="hidden" value="${rc}">
 		    <div id="order-notifications" class="mt-6"></div>
 		</div>
     </div>

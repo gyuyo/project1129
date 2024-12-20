@@ -16,4 +16,6 @@ public class Member {
 	private String loginPw;
 	private String name;
 	private String email;
+	private double latitude;
+	private double longitude;
 }

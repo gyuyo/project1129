@@ -42,4 +42,8 @@ public class RestaurantService {
 		return restaurantDao.getRestaurantByOwnerId(loginedMemberId);
 	}
 
+	public void doregister(String name, String latitude, String longitude) {
+		restaurantDao.doregister(name, latitude, longitude);
+	}
+
 }

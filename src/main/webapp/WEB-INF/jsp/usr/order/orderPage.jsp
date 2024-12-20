@@ -8,18 +8,21 @@
 
 <script>
 	$(document).ready(function() {
-		orderStatusReload();
+		if ("${order.getOrderStatus()}".includes("배달")) {
+			location.href = "/usr/order/riderStatus?orderNum=" + ${order.getId()}
+		};
 		
+		orderStatusReload();
 		let socket = new SockJS('/ws-stomp');
    		let stompClient = Stomp.over(socket);
+   		let userId = ${rq.getLoginedMemberId()};
    		
 	    stompClient.connect({}, function () {
-	    	stompClient.subscribe('/sub/message', function (message) {
-	    		console.log(message);
+	    	stompClient.subscribe(`/sub/user/\${userId}/queue/messages`, function (message) {
 	    		if(message.body == 1) {
 	    			orderStatusReload();
 	    		} else {
-	    			location.href = "/usr/order/riderStatus?orderId=" + ${rq.getLoginedMemberId() };
+	    			location.href = "/usr/order/riderStatus?orderNum=" + ${order.getId()};
 	    		}
 	    	});
 	   	});
@@ -100,8 +103,9 @@
 		            	<span>주문 접수 대기중 상태에서만 취소가 가능합니다.</span>
 		        	</div>
 	            </div>
-	            <input class="input input-bordered" id="sender" type="hidden" value="${ownerId }">
+	            <input class="input input-bordered" id="sender" type="hidden" value="${rq.getLoginedMemberId()}">
 				<input class="input input-bordered" id="message" type="hidden" value="1">
+				<input class="input input-bordered" id="recipientId" type="hidden" value="${ownerId }">
 	        </div>
 		</div>	
     </div>

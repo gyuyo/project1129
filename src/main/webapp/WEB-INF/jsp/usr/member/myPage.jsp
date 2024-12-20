@@ -42,6 +42,9 @@
 		<div class="btns w-9/12 mx-auto mt-3 text-sm flex justify-between">
 			<button onclick="history.back();">뒤로가기</button>
 			<div class="flex">
+				<c:if test="${member.getAccessId() == 1}">
+					<a href="/usr/member/addrModify" class="p-5 mr-6">배달지 수정</a>
+				</c:if>
 				<a href="/usr/member/checkPw" class="p-5">비밀번호변경</a>
 			</div>
 		</div>

@@ -72,8 +72,7 @@ async function encryptSHA256(input) {
 					<tr>
 						<td>
 							<div class="flex justify-center">
-								<button id="checkPwBtn" onclick="checkPwBtn_onClick();"
-									class="btn btn-active btn-wide">확인</button>
+								<button id="checkPwBtn" onclick="checkPwBtn_onClick();"	class="btn btn-active btn-wide">확인</button>
 							</div>
 						</td>
 					</tr>

@@ -16,6 +16,8 @@ public class Restaurant {
 	private String memberId;
 	private int like;
 	private int orderCount;
+	private double latitude;
+	private double longitude;
 	
 	private String loginId;
 }

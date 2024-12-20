@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.Menu;
@@ -13,8 +14,10 @@ import com.example.demo.dto.ResultData;
 import com.example.demo.dto.Rq;
 import com.example.demo.dto.ShoppingCart;
 import com.example.demo.service.CustomerService;
+import com.example.demo.service.MemberService;
 import com.example.demo.service.MenuService;
 import com.example.demo.service.OrderService;
+import com.example.demo.util.Util;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -43,10 +46,10 @@ public class UsrCustomerController {
 			return ResultData.from("F-2", "로그인 후 이용할 수 있습니다.");
 		}
 		
-	    Order order = orderService.getOrderStatus(rq.getLoginedMemberId());
+	    Order order = orderService.getOrderByOrderId(rq.getLoginedMemberId());
 		
-//		System.out.println(order);
-		
+	    System.out.println(order);
+	    
 		if(order != null && !order.getOrderStatus().equals("배달 완료")) {
 			return ResultData.from("F-2", "주문이 진행중입니다.");
 		}
@@ -71,7 +74,7 @@ public class UsrCustomerController {
 	@GetMapping("/usr/customer/shoppingCart")
 	public String shoppingCart(HttpServletRequest req, Model model) {
 		Rq rq = (Rq) req.getAttribute("rq");
-
+		
 		List<Menu> menus = customerService.getMenuByLoginedMemberId(rq.getLoginedMemberId());
 		int ownerId = 0; 
 		if(menus.size() > 0) {
@@ -80,8 +83,18 @@ public class UsrCustomerController {
 		
 		model.addAttribute("menus", menus);
 		model.addAttribute("ownerId", ownerId);
-
+		
 		return "usr/customer/shoppingCart";
+	}
+	
+	@PostMapping("/usr/customer/doaddrModify")
+	@ResponseBody
+	public String doaddrModify(HttpServletRequest req, double latitude, double longitude) {
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		customerService.doaddrModify(rq.getLoginedMemberId(), latitude, longitude);
+		
+		return Util.jsReturn("배송지 수정이 완료되었습니다.", "/usr/member/myPage");
 	}
 
 	@GetMapping("/usr/customer/menuDelete")

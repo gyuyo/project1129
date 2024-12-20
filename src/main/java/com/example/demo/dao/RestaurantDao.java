@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -11,6 +12,8 @@ import com.example.demo.dto.Restaurant;
 
 @Mapper
 public interface RestaurantDao {
+	
+	
 	
 	@Select("""
 			<script>
@@ -81,4 +84,14 @@ public interface RestaurantDao {
 				WHERE ownerId = #{loginedMemberId}
 			""")
 	Restaurant getRestaurantByOwnerId(int loginedMemberId);
+	
+	@Insert("""
+			INSERT INTO restaurant
+				SET `name` = #{name}
+						, regDate = NOW()
+						, updateDate = NOW()
+						, latitude = #{latitude}
+						, longitude = #{longitude}
+			""")
+	void doregister(String name, String latitude, String longitude);
 }

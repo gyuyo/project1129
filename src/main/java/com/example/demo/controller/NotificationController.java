@@ -16,8 +16,10 @@ public class NotificationController {
 	}
 	
 	@MessageMapping("/messages")
-	public NotificationMessage send2(NotificationMessage message) {
-		template.convertAndSend("/sub/message", message.getContent());
-		return message;
-	}
+    public NotificationMessage send2(NotificationMessage message) {
+		String recipientId = message.getRecipientId();
+	    String destination = "/sub/user/" + recipientId + "/queue/messages"; 
+	    template.convertAndSend(destination, message.getContent()); 
+	    return message;
+    }
 }

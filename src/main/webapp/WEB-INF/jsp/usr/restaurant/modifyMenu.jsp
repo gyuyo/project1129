@@ -20,7 +20,7 @@
 	                    type="text" 
 	                    id="menuName" 
 	                    name="menuName" 
-	                    value="${menu.getName()}"
+	                    value="${menu.getMenuName()}"
 	                    class="mt-2 p-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
 	                    required
 	                >

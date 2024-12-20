@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.Order;
 import com.example.demo.dto.OrderMenu;
+import com.example.demo.dto.Restaurant;
 import com.example.demo.dto.ResultData;
 import com.example.demo.dto.Rq;
 import com.example.demo.service.CustomerService;
@@ -53,11 +54,11 @@ public class UsrOrderController {
 	
 	@GetMapping("/usr/order/doOrderAccept")
 	@ResponseBody
-	public String doOrderAccept(int orderNum) {
+	public ResultData doOrderAccept(int orderNum) {
 		
 		orderService.doOrderAccept(orderNum, "요리 중");
 		
-		return Util.jsReturn("주문이 확인되었습니다.", String.format("/usr/order/orderDetail?orderNum=%d",orderNum));
+		return ResultData.from("S-1", "오더 상태 확인");
 	}
 	
 	@GetMapping("/usr/order/orderPage")
@@ -74,6 +75,10 @@ public class UsrOrderController {
 		model.addAttribute("order", order);
 		model.addAttribute("totalPrice", totalPrice);
 		model.addAttribute("orderMenus", orderMenus);
+		
+		if(order.getOrderStatus().contains("배달")) {
+			return "usr/order/riderStatus";
+		}
 		
 		return "usr/order/orderPage";
 	}
@@ -136,15 +141,24 @@ public class UsrOrderController {
 	}
 	
 	@GetMapping("/usr/order/callRider")
-	public String callRider(HttpServletRequest req, int orderNum) {
+	@ResponseBody
+	public ResultData callRider(HttpServletRequest req, int orderNum) {
 		
 		orderService.doOrderAccept(orderNum, "픽업 대기중");
 		
-		return "usr/order/riderStatus";
+		return ResultData.from("S-1", "오더 상태 확인");
 	}
 	
 	@GetMapping("/usr/order/riderStatus")
-	public String riderStatus() {
+	public String riderStatus(Model model, int orderNum) {
+		
+		Restaurant restaurant = orderService.getAddressbyOrderNum(orderNum);
+		Order order = orderService.getOrderStatus(orderNum);
+		
+		
+		model.addAttribute("restaurant", restaurant);
+		model.addAttribute("order", order);
+		
 		return "usr/order/riderStatus";
 	}
 

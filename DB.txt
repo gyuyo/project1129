@@ -3,13 +3,15 @@ CREATE DATABASE PROJECT;
 USE PROJECT;
 
 CREATE TABLE restaurant (
-	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
 	, regDate DATETIME NOT NULL
 	, updateDate DATETIME NOT NULL
 	, `name` VARCHAR(100) NOT NULL
-	, cgId INT UNSIGNED NOT NULL
-	, ownerId INT UNSIGNED NOT NULL UNIQUE
+	, cgId INT UNSIGNED NOT NULL DEFAULT 1
+	, ownerId INT UNSIGNED NOT NULL DEFAULT 6
 	, orderCount INT UNSIGNED NOT NULL DEFAULT 0
+  , latitude DECIMAL(9, 6) NOT NULL
+  , longitude DECIMAL(9, 6) NOT NULL  
 );
 
 CREATE TABLE `member`(
@@ -21,6 +23,8 @@ CREATE TABLE `member`(
 	, loginPw VARCHAR(100) NOT NULL
 	, `name` VARCHAR(20) NOT NULL
 	, email VARCHAR(100) NOT NULL
+	, latitude DECIMAL(9, 6) NOT NULL DEFAULT 0
+  , longitude DECIMAL(9, 6) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE category (
@@ -76,6 +80,13 @@ CREATE TABLE orderMenu (
 	, quantity INT UNSIGNED NOT NULL DEFAULT 1
 );
 
+CREATE TABLE orderAddr (
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
+	, memberId INT UNSIGNED NOT NULL
+	, latitude DECIMAL(9, 6) NOT NULL
+  , longitude DECIMAL(9, 6) NOT NULL  
+)
+
 INSERT INTO category
 	SET cgName = '한식';
 INSERT INTO category
@@ -116,6 +127,16 @@ INSERT INTO `member`
 			, `name` = '유저3'
 			, email = 'test3@test.com';
 
+INSERT INTO `member`
+	SET id = 6
+			, regDate = NOW()
+			, updateDate = NOW()
+			, accessId = 2
+			, loginId = 'test6'
+			, loginPw = SHA2('test6', 256)
+			, `name` = '유저6'
+			, email = 'test6@test.com';
+			
 INSERT INTO restaurant
 	SET regDate = NOW()
 			, updateDate = NOW()
@@ -123,25 +144,43 @@ INSERT INTO restaurant
 			, `name` = '한식집'
 			, ownerId = 2;
 
-INSERT INTO menu
-	SET	restaurantId = 1
-			, menuName = '김치찌개'
-			, `description` = '김치찌개'
-			, price = 9000
-			, readyTime = 30;
-INSERT INTO menu
-	SET	restaurantId = 1
-			, menuName = '된장찌개'
-			, `description` = '된장찌개'
-			, price = 8000
-			, readyTime = 20;
-INSERT INTO menu
-	SET	restaurantId = 1
-			, menuName = '갈비찜'
-			, `description` = '갈비찜'
-			, price = 12000
-			, readyTime = 40;
-			
+INSERT INTO menu (restaurantId, menuName, `description`, price, readyTime) 
+VALUES
+(300, '김치찌개', '김치찌개', 9000, 30),
+(300, '불고기', '달콤하고 짭짤한 불고기', 12000, 25),
+(300, '된장찌개', '된장찌개', 8000, 20),
+(300, '갈비찜', '매콤하고 달콤한 갈비찜', 15000, 40),
+(300, '비빔밥', '비빔밥', 10000, 15),
+(300, '삼겹살', '고소한 삼겹살', 12000, 25);
+
+INSERT INTO menu (restaurantId, menuName, DESCRIPTION, price, readyTime) 
+VALUES
+(247, '짜장면', '짜장면', 7000, 20),
+(247, '짬뽕', '매운 짬뽕', 8000, 25),
+(247, '탕수육', '새콤달콤한 탕수육', 10000, 30),
+(247, '유산슬', '유산슬', 12000, 40),
+(247, '볶음밥', '볶음밥', 6000, 15),
+(247, '마파두부', '매운 마파두부', 11000, 35);
+
+INSERT INTO menu (restaurantId, menuName, DESCRIPTION, price, readyTime) 
+VALUES
+(263, '스파게티', '토마토 소스 스파게티', 12000, 20),
+(263, '피자', '치즈와 토마토가 가득한 피자', 15000, 25),
+(263, '스테이크', '굽기 정도가 다양한 스테이크', 25000, 30),
+(263, '파스타', '크림 파스타', 13000, 20),
+(263, '라자냐', '치즈가 가득한 라자냐', 14000, 35),
+(263, '리조또', '크림 리조또', 12000, 25);
+
+INSERT INTO menu (restaurantId, menuName, DESCRIPTION, price, readyTime) 
+VALUES
+(276, '초밥', '초밥', 15000, 20),
+(276, '라멘', '라멘', 8000, 25),
+(276, '돈카츠', '바삭한 돈카츠', 12000, 30),
+(276, '오니기리', '간편한 오니기리', 5000, 15),
+(276, '회덮밥', '회덮밥', 12000, 25),
+(276, '가츠동', '가츠동', 10000, 30);
+
+		
 INSERT INTO reply
 	SET regDate = NOW()
         , updateDate = NOW()
@@ -166,29 +205,6 @@ INSERT INTO reply
         , memberId = 2
         , restaurantId = 3
         , `body` = '댓글테스트4';	
- 
-INSERT INTO restaurant
-(
-    regDate, updateDate, cgId, `name`, memberId
-)			
-SELECT NOW()
-        , NOW()
-        , FLOOR(RAND() * 6) + 1
-        , CONCAT('식당_', FLOOR(RAND() * 100000))
-        , 2
-    FROM restaurant;
-    
-    
-INSERT INTO menu
-(
-    restaurantId , `name` , `description` , price , readyTime
-)			
-SELECT FLOOR(RAND() * 100) + 1
-        , CONCAT('음식_', FLOOR(RAND() * 100000))
-        , CONCAT('설명_', FLOOR(RAND() * 100000))
-        , FLOOR(RAND() * 10000) + 1
-        , FLOOR(RAND() * 20) + 1
-    FROM menu;
 
 SELECT * FROM restaurant;
 SELECT * FROM `member`;
@@ -210,7 +226,7 @@ INSERT `order`
 INSERT orderMenu
 	SET orderId = 1
 			, MenuId = 1
-			, orderNum = 9
+			, orderNum = 49
 			, quantity = 1;
 
 INSERT orderMenu
@@ -218,32 +234,29 @@ INSERT orderMenu
 			, MenuId = 1
 			, orderNum = 6
 			, quantity = 2;
+			
+
+UPDATE restaurant
+SET ownerId = 2
+WHERE id = 300;
+
 SELECT *
-				FROM `order`
-				WHERE orderMemberId	= 1
-				
-SELECT *, SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
-				FROM orderMenu AS om
-				INNER JOIN menu AS m
-				ON om.menuId = m.id
-				INNER JOIN `order` AS o
-				ON om.orderNUm = o.id
-				INNER JOIN restaurant AS r
-				ON o.restaurantId = r.id
-				WHERE r.ownerId = 2
-				GROUP BY o.id
-				ORDER BY o.id DESC
-				
-SELECT *, SUM(om.quantity) AS quantity, SUM(m.price * om.quantity) AS totalPrice
-				FROM orderMenu AS om
-				INNER JOIN menu AS m
-				ON om.menuId = m.id
-				INNER JOIN `order` AS o
-				ON om.orderNUm = o.id
-				INNER JOIN restaurant AS r
-				ON o.restaurantId = r.id
-				WHERE (o.riderMemberId = -1 AND o.orderStatus = '픽업 대기중')
-				OR (o.riderMemberId = 3)
-				GROUP BY o.id
-				ORDER BY o.id DESC
-				
+FROM restaurant
+WHERE `name` LIKE CONCAT('%%');
+
+SELECT *
+	FROM `member` AS m
+	INNER JOIN `order` AS o
+	ON m.id = o.orderMemberId
+	WHERE o.id = 50
+	
+SELECT *
+	FROM restaurant AS r
+	INNER JOIN `order` AS o
+	ON r.id = o.restaurantId
+	WHERE o.id = 50
+	
+UPDATE restaurant
+SET cgId = 6
+		, `name` = '햄버거집'
+WHERE id = 295

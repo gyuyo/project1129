@@ -159,8 +159,9 @@
 				            <p id="modalTotalPrice" class="text-lg font-semibold text-[#4B4F54]"></p>
 				        </div>
 				        <div>
-							<input class="input input-bordered" id="sender" type="hidden" value="${ownerId }">
+							<input class="input input-bordered" id="sender" type="hidden" value="${rq.getLoginedMemberId()}">
 							<input class="input input-bordered" id="message" type="hidden" value="주문이 접수되었습니다.">
+							<input class="input input-bordered" id="recipientId" type="hidden" value="${ownerId }">
 						</div>
 				        
 				        <div class="flex justify-between mt-6">

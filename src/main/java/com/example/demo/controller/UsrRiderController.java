@@ -7,15 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.demo.dto.Menu;
+import com.example.demo.dto.Member;
 import com.example.demo.dto.Order;
+import com.example.demo.dto.Restaurant;
 import com.example.demo.dto.ResultData;
 import com.example.demo.dto.Rq;
-import com.example.demo.dto.ShoppingCart;
-import com.example.demo.service.CustomerService;
-import com.example.demo.service.MenuService;
 import com.example.demo.service.OrderService;
-import com.example.demo.util.Util;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -48,41 +45,45 @@ public class UsrRiderController {
 	@GetMapping("/usr/rider/deliveryDetail")
 	public String deliveryDetail(Model model, int orderNum) {
 		
+		Restaurant restaurant = orderService.getAddressbyOrderNum(orderNum);
 		int ownerId = orderService.getOwnerIdByOrderNum(orderNum);
 		Order order = orderService.getOrderStatus(orderNum);
+		Member member = orderService.getMemberAddressbyOrderNum(orderNum);
 		
+		model.addAttribute("restaurant", restaurant);
 		model.addAttribute("ownerId", ownerId);
 		model.addAttribute("order", order);
+		model.addAttribute("member", member);
 		
 		return "usr/rider/deliveryDetail";
 	}
 	
 	@GetMapping("/usr/rider/doCallAccept")
 	@ResponseBody
-	public String doCallAccept(HttpServletRequest req, int orderNum) {
+	public ResultData doCallAccept(HttpServletRequest req, int orderNum) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
 		orderService.doCallAccept(orderNum, rq.getLoginedMemberId(),"배달 준비중");
 		
-		return Util.jsReturn("배달 콜을 접수하였습니다.", String.format("/usr/rider/deliveryDetail?orderNum=%d",orderNum));
+		return ResultData.from("S-1", "픽업 출발");
 	}
 	
 	@GetMapping("/usr/rider/doDelivery")
 	@ResponseBody
-	public String doDelivery(int orderNum) {
+	public ResultData doDelivery(int orderNum) {
 		
 		orderService.doOrderAccept(orderNum, "배달 중");
 		
-		return Util.jsReturn("배달이 시작되었습니다.", String.format("/usr/rider/deliveryDetail?orderNum=%d",orderNum));
+		return ResultData.from("S-1", "배달 출발");
 	}
 	
 	@GetMapping("/usr/rider/deliveryEnd")
 	@ResponseBody
-	public String deliveryEnd(int orderNum) {
+	public ResultData deliveryEnd(int orderNum) {
 		
 		orderService.doOrderAccept(orderNum, "배달 완료");
 		
-		return Util.jsReturn("배달이 완료되었습니다.", "/usr/home/main");
+		return ResultData.from("S-1", "배달 중");
 	}
 
 }

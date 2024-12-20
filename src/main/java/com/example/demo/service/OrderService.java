@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.OrderDao;
+import com.example.demo.dto.Member;
 import com.example.demo.dto.Order;
 import com.example.demo.dto.OrderMenu;
+import com.example.demo.dto.Restaurant;
 
 @Service
 public class OrderService {
@@ -25,6 +27,10 @@ public class OrderService {
 		orderDao.doOrder(orderMemberId, restaurantId);
 	}
 
+	public Order getOrderByOrderId(int orderMemberId) {
+		return orderDao.getOrderByOrderId(orderMemberId);
+	}
+	
 	public Order getOrderStatus(int orderNum) {
 		return orderDao.getOrderStatus(orderNum);
 	}
@@ -74,5 +80,13 @@ public class OrderService {
 
 	public int getLastOrderNum() {
 		return orderDao.getLastOrderNum();
+	}
+
+	public Restaurant getAddressbyOrderNum(int orderNum) {
+		return orderDao.getAddressbyOrderNum(orderNum);
+	}
+
+	public Member getMemberAddressbyOrderNum(int orderNum) {
+		return orderDao.getMemberAddressbyOrderNum(orderNum);
 	}
 }

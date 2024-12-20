@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.dto.Menu;
 import com.example.demo.dto.ShoppingCart;
@@ -51,4 +52,12 @@ public interface CustomerDao {
 				AND memberId = #{memberId}
 			""")
 	void doMenuDelete(int memberId, int menuId);
+	
+	@Update("""
+			UPDATE `member`
+				SET latitude = #{latitude}
+						,	longitude = #{longitude}
+				WHERE id = #{loginedMemberId}
+			""")
+	void doaddrModify(int loginedMemberId, double latitude, double longitude);
 }

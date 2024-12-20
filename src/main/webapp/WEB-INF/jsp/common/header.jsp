@@ -63,11 +63,13 @@
 	                    
 	                    function test2() {
 	                        let sender = $('#sender').val();
-// 	                        let recipient = $('#recipient').val();
 	                        let content = $('#message').val();
+	                        let recipientId = $('#recipientId').val();
+	                        
 	                        stompClient.send('/pub/messages', {}, JSON.stringify({
 	                            sender: sender,
-	                            content: content
+	                            content: content,
+	                            recipientId: recipientId
 	                        }));
 	                    }
 	                    window.test1 = test1;

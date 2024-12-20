@@ -35,4 +35,8 @@ public class CustomerService {
 	public void doMenuDelete(int memberId, int menuId) {
 		customerDao.doMenuDelete(memberId, menuId);
 	}
+
+	public void doaddrModify(int loginedMemberId, double latitude, double longitude) {
+		customerDao.doaddrModify(loginedMemberId, latitude, longitude);
+	}
 }
