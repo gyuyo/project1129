@@ -36,7 +36,9 @@
 	async function changeQuantity(menuId, delta, unitPrice) {
 	    var $quantityElement = $("#quantity-" + menuId);
 	    var $priceElement = $("#price-" + menuId);
-		
+	    var $quantityElement2 = $("#quantity2-" + menuId);
+	    var $priceElement2 = $("#price2-" + menuId);
+	    
 	    var currentQuantity = parseInt($quantityElement.text());
 	    var newQuantity = currentQuantity + delta;
 	    
@@ -50,6 +52,8 @@
 	    } else {
 	        $quantityElement.text(newQuantity);
 	        $priceElement.text((unitPrice * newQuantity));
+	        $quantityElement2.text(newQuantity);
+	        $priceElement2.text((unitPrice * newQuantity));
 	        
 	        await updateMenuQuantity(menuId, newQuantity);
 	
@@ -141,12 +145,12 @@
 				                <div class="flex items-center bg-white p-6 rounded-lg shadow-lg" id="menu-${menu.getMenuId()}">
 				                    <img src="https://via.placeholder.com/150" alt="Menu Image" class="w-24 h-24 object-cover rounded-lg mr-6">
 				                    <div class="flex-1">
-				                        <h2 class="text-xl font-semibold text-[#4B4F54]">${menu.getMenuName()}</h2>
-				                        <p class="text-gray-500 mb-2">${menu.getDescription()}.</p>
-				                        <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price-${menu.getMenuId()}">${menu.getPrice() * menu.getQuantity()}</span>원</p>
-				                    </div>
+						                <p class="text-xl font-semibold text-[#4B4F54]">${menu.getMenuName()}</p>
+						                <p class="text-gray-500 mb-2">${menu.getDescription()}.</p>
+						                <p class="font-bold text-[#4B4F54] mb-2">가격: <span id="price2-${menu.getMenuId()}">${menu.getPrice() * menu.getQuantity()}</span>원</p>
+						            </div>
 				                    <div class="flex flex-col items-center">
-				                        <p class="text-lg font-semibold mb-2">수량: <span id="quantity-${menu.getMenuId()}">${menu.getQuantity()}</span></p>
+				                        <p class="text-lg font-semibold mb-2">수량: <span id="quantity2-${menu.getMenuId()}">${menu.getQuantity()}</span></p>
 				                    </div>
 				                    <input type="hidden" name="restaurantId" id="restaurantId" value="${menu.getRestaurantId() }">
 				                    <input type="hidden" name="menus" id="menus" value="${menu.getMenuId()}">

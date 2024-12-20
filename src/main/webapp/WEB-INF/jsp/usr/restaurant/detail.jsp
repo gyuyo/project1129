@@ -157,7 +157,6 @@
 	
 	async function changeQuantity(menuId, delta, restaurantId) {
 	    var $quantityElement = $("#quantity-" + menuId);
-		
 	    var currentQuantity = parseInt($quantityElement.text());
 	    var newQuantity = currentQuantity + delta;
 	    
@@ -226,7 +225,7 @@
 									<c:when test="${menu.getId() == shoppingCart.getMenuId() }">
 										<c:set var="addCartBtn" value="0" />
 										<c:set var="chk" value="false" />
-										<c:set var="qua	ntity" value="${shoppingCart.getQuantity() }" />
+										<c:set var="quantity" value="${shoppingCart.getQuantity() }" />
 									</c:when>
 									<c:otherwise>
 										<c:set var="addCartBtn" value="1" />
